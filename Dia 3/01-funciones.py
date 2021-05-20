@@ -101,3 +101,31 @@ alumnos({"nombre": "Eduardo", "nota": 7},
         {"nombre": "Lizbeth", "nota": 15})
 
 # Hay 6 aprobados y 1 desaprobado de un total de 7
+
+
+# keyworkd arguments => **kwargs sirve para pasar un numero indeterminado de parametros PERO a diferencia del args en este caso tenemos que definir el nombre del parametro
+def indeterminada(**kwargs):
+    print(kwargs)
+
+
+indeterminada(nombre="Eduardo", apellido="de Rivero", nacionalidad="Peruano")
+indeterminada(nombre="Maria", apellido="Bustinza", sexo="Femenino")
+indeterminada(nota=20, edad=18)
+
+
+def mifuncion(*args, **kwargs):
+    print(args)
+    print(kwargs)
+
+
+mifuncion(10, "eduardo", False, nacionalidad="Peruano")
+
+
+# si nosotros queremos regresar un resultado para posteriormente analizarlo usamos la palabra clave return
+def multiplicacion(numero1, numero2):
+    return numero1 * numero2, 100
+
+
+resultado, resultado2 = multiplicacion(10, 20)
+print(resultado)
+print(resultado2)
