@@ -1,4 +1,7 @@
 # ejemplo:
+# Para evitar que en cada impresion se ejecute en una nueva linea, se puede agregar el parametro end y este indicara como queremos que actue al finalizar la linea, su valor por defecto es \n, pero si le cambiamos a * entonces, al finalizar la impresion, colocara un asterisco en vez de un salto de linea
+for numero in range(5):
+    print(numero, end="*")
 
 # Escriba una funcion que le pida al usuario ingresar la altura y el ancho de un rectangulo y
 # que lo dibuje usando *, ejemplo:
@@ -11,7 +14,7 @@
 # ****
 # ****
 
-# Escribir una funcion que nosotros le ingresemos el lado de un hexagono y que lo dibuje
+# Escribir una funcion que nosotros le ingresemos el lado de un octagono y que lo dibuje
 # Ejemplo:
 # Lados: 5
 #       *****
