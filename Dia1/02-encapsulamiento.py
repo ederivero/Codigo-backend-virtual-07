@@ -34,9 +34,26 @@ class Vehiculo:
         return "El largo es: {}, y su ancho es: {}".format(self.largo,  self.ancho)
 
 
-objVehiculo = Vehiculo(4.50, 1.80, 3000)
-print(objVehiculo.largo)
-print(objVehiculo.encender())
+# objVehiculo = Vehiculo(4.50, 1.80, 3000)
+# print(objVehiculo.largo)
+# print(objVehiculo.encender())
 
 
-print(objVehiculo)
+# print(objVehiculo)
+
+
+class Persona:
+    def __init__(self, nombre, apellido, correo, password):
+        self.nombre = nombre
+        self.apellido = apellido
+        self.correo = correo
+        self.password = self.__encriptar_password(password)
+
+    def encriptar_password(self, password):
+        return "sdfasdfasldfjkhasflja" + password + "asdasuodiasdoi"
+
+
+objPersona = Persona("Eduardo", "De Rivero",
+                     "ederiveroman@gmail.com", "123456")
+print(objPersona.password)
+objPersona.encriptar_password("hola_mundo")
