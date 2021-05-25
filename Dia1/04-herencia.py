@@ -43,6 +43,7 @@ class Camion(Vehiculo):
 
 objAuto = Auto("Hyundai", "Accent", False)
 objCamion = Camion("VOLVO", "F100", True, True)
+objAuto2 = Auto(modelo="alto", marca="Suzuki", turbo=False)
 
 print(objAuto.estado())
 print(objCamion.estado())
