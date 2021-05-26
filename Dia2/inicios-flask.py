@@ -4,6 +4,7 @@ from flask import Flask, request
 # si estamos en el archivo principal nos imprimira => __main__, caso contrario imprimira otra cosa
 # print(__name__)
 app = Flask(__name__)
+productos = []
 
 
 # un decorador es un patron de software que se utiliza para modificar el funcionamiento de una funcion o clase en particular sin la necesidad de emplear otro metodos como la herencia
@@ -20,13 +21,51 @@ def gestion_productos():
     if request.method == "POST":
         data = request.get_json()
         print(data)
+        productos.append(data)
         return {
-            "message": "Producto creado exitosamente"
-        }
+            "message": "Producto creado exitosamente",
+            "content": data
+        }, 201
     elif request.method == "GET":
         return {
-            "message": "Estos son los productos registrados"
+            "message": "Estos son los productos registrados",
+            "content": productos
+        }, 200
+
+
+# NOTA! Al hacer un get queda PROHIBIDO enviar informacion mediante el BODY
+@app.route("/productos/<int:id>", methods=['PUT', 'DELETE', 'GET'])
+def gestion_producto(id):
+    print(id)
+    if len(productos) <= id:
+        return {
+            "message": "Producto no encontrado"
+        }, 404
+
+    if request.method == "GET":
+        return {
+            "content": productos[id]
+        }, 200
+
+    elif request.method == "DELETE":
+        productos.pop(id)
+        return {
+            "message": "Producto eliminado exitosamente"
         }
+
+    elif request.method == "PUT":
+        data = request.get_json()
+        productos[id] = data
+        return {
+            "message": "Producto actualizado exitosamente",
+            "content": productos[id]
+        }, 201
+
+
+@app.route("/productos/buscar")
+def buscar_productos():
+    print(request.args.get("nombre"))
+    return "ok"
 
 
 # debug = True => que cada vez que hagamos un cambio y lo guardemos automaticamente se reiniciara mi servidor con los nuevos cambios
