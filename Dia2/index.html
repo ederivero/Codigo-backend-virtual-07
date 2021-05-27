@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <script>
+    fetch("http://127.0.0.1:5000/", {
+      method: "GET",
+    }).then((respuesta) => {
+      console.log(respuesta.status);
+    });
+    // En el caso que nosotros queremos enviar informacion al backend por el body tenemos que primero convertir ese json a un STRING mediante el metodo stringify y luego, agregar en los headers Content-Type con el valor de application/json
+    fetch("http://127.0.0.1:5000/productos", {
+      method: "POST",
+      body: JSON.stringify({
+        nombre: "Leche De almendras",
+        precio: 15.4,
+        cantidad: 80,
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }).then((respuesta) => {
+      respuesta.json().then((json) => {
+        console.log(json);
+      });
+    });
+  </script>
+  <body></body>
+</html>
