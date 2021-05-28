@@ -40,3 +40,32 @@ INSERT INTO PRODUCTOS (nombre, precio, disponible, categoria_id) VALUES
                       ("ZAPATILLA OFFROAD MUJER", 320.89, true, 2),
                       ("BOTIN TACO 4", 520.00, true, 3),
                       ("BOTA TACO 10", 710, false, 4);
+
+
+SELECT * from categorias where nombre LIKE '%A%';
+-- select * from productos where precio >= 100;
+-- 
+-- 1. DEVOLVER TODOS LOS PRODUCTOS CUYO PRECIO SEA ENTRE 100 y 250 soles
+SELECT * FROM PRODUCTOS WHERE precio BETWEEN 100 and 250;
+SELECT * FROM PRODUCTOS WHERE precio > 100 and precio < 250;
+-- 2. DEVOLVER TODOS LOS PRODUCTOS DISPONIBLES
+SELECT * FROM productos where disponible = true;
+-- 3. DEVOLVER TODOS LOS PRODUCTOS QUE SEAN PARA HOMBRE
+SELECT * from productos where nombre like '%hombre%';
+-- 4. DEVOLVER TODOS LOS PRODUCTOS QUE TENGAN "TACO 4"
+SELECT * from productos where nombre like '%taco 4%';
+-- 5. DEVOLVER TODAS LAS ZAPATILLAS
+SELECT * from productos where nombre like '%zapatilla%';
+-- 6. DEVOLVER TODOS LOS PRODUCTOS QUE CUESTEN MAS DE 500 y NO ESTEN DISPONIBLES
+SELECT * from productos where precio > 500 AND disponible = false;
+-- 7. DEVOLVER TODAS LAS ZAPATILLAS Y LAS BOTAS
+SELECT * FROM productos where nombre like '%zapatilla%' OR nombre like '%bota%';
+
+
+
+
+
+
+
+
+
