@@ -61,9 +61,22 @@ def data_muchos(alumnos):
             2021, 3, 1), date_end=datetime(2021, 12, 10))
         fecha_fin = fake.date_between_dates(
             date_start=fecha_inicio, date_end=datetime(2021, 12, 10))
-        print('INSERT INTO CURSOS VALUES ({},"{}","{}","{}");'.format(
+        print('INSERT INTO cursos VALUES ({},"{}","{}","{}");'.format(
             id_curso, curso, fecha_inicio, fecha_fin))
         id_curso += 1
 
+    # En base a los cursos y alumnos generados, crear el simulador dentro de esta funcion para que enlace los alumnos con los cursos, no se puede repetir un alumno-curso
+    # 2   -  2
+    # 2   -  2
+    registro_alumno_curso = []
+    for ciclo in range(1, alumnos*2):
+        alumno = fake.random_int(min=1, max=alumnos)
+        curso = fake.random_int(min=1, max=len(cursos))
+        if [alumno, curso] in registro_alumno_curso:
+            ciclo -= 1
+        else:
+            registro_alumno_curso.append([alumno, curso])
+            print('INSERT INTO alumnos_cursos VALUES ({},{});'.format(alumno, curso))
 
-data_muchos(2)
+
+data_muchos(100)
