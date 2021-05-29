@@ -32,11 +32,28 @@ GROUP BY departamento_id, nombre, apellido;
 update personales set departamento_id = 4, nombre = 'Lindsay' 
 WHERE departamento_id=1 and nombre='Tyler';
 
--- 1. MOSTRAR DE LOS NOMBRES MAS USADOS e indicar cuantos son
+-- 1. MOSTRAR LOS NOMBRES DE LOS EMPLEADOS MAS USADOS e indicar cuantos son
+select nombre, count(nombre)
+from personales
+group by nombre
+order by 2 desc;
 
 -- 2. MOSTRAR CUANTOS EMPLEADOS HAY EN EL DEPARTAMENTO = 2
+select 'departamento 2', count(*) 
+from personales where departamento_id=2;
+
 -- 3. MOSTRAR cuantas personas no tienen jefe
+select 'personas sin jefe',count(*) 
+from personales where supervisor_id is null;
+
 -- 4. MOSTRAR EN FORMA DESCENDENTE LOS JEFES CON LA CANTIDAD DE SUBORDINADOS
+select jefes.nombre, jefes.apellido, count(*)
+from personales as jefes
+inner join personales as subordinados
+on jefes.id = subordinados.supervisor_id
+group by jefes.nombre, jefes.apellido
+order by 3 desc;
+
 -- 5. MOSTRAR el nombre del departamento y su cantidad de empleados
 
 -- DEPARTAMENTO 	|  CANTIDAD DE EMPLEADOS
@@ -45,10 +62,12 @@ WHERE departamento_id=1 and nombre='Tyler';
 -- Finanzas			|   		85
 -- Marketing		|   		56
 
-
-
-
-
+select departamentos.nombre, count(*) 
+from personales
+join departamentos
+on personales.departamento_id = departamentos.id
+group by departamentos.nombre
+order by 2 desc;
 
 
 
