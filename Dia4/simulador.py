@@ -70,7 +70,7 @@ def data_muchos(alumnos):
     # 2   -  2
     registro_alumno_curso = []
     for ciclo in range(1, alumnos*2):
-        alumno = fake.random_int(min=1, max=alumnos)
+        alumno = fake.random_int(min=1, max=alumnos-1)
         curso = fake.random_int(min=1, max=len(cursos))
         if [alumno, curso] in registro_alumno_curso:
             ciclo -= 1
