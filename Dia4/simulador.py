@@ -11,11 +11,11 @@ for id in range(1, 501):
     nombre = fake.first_name()
     apellido = fake.last_name()
     identificador = fake.uuid4()
-    departamento_id = fake.random_int(min=1, max=5)
+    departamento_id = fake.random_int(min=1, max=4)
     if id == 1:
         supervisor_id = "null"
     else:
-        supervisor_id = fake.random_int(min=-10, max=id)
+        supervisor_id = fake.random_int(min=-10, max=id-1)
         # haremos que el numero random pueda ir desde el -10 hasta < id actual, luego, si el numero es menor o igual a 0 entonces el empleado no tendra supervisor (null)
         if supervisor_id <= 0:
             supervisor_id = "null"
