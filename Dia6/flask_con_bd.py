@@ -26,6 +26,20 @@ def gestion_alumnos():
     # registro la sentencia ya sea un DDL o DML
     cur.execute("SELECT * FROM ALUMNOS")
     # capturo la informacion a partir de la consulta
+    # retornar la data de la siguiente forma
+    # [
+    #     {
+    #         "id":1,
+    #         "matricula":"4389",
+    #         "nombre":"Heidi",
+    #         "apellido":"Jenkins",
+    #         "localidad":"New Autumnside",
+    #         "fecha_nacimiento":"Thu, 15 Aug 1996 00:00:00 GMT"
+    #     },
+    #     {
+    #         ...
+    #     }
+    # ]
     data = cur.fetchall()
     return {
         "data": data
