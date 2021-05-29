@@ -42,6 +42,7 @@ def data_personales(limite):
 
 
 def data_muchos(alumnos):
+    alumnos += 1
     for id in range(1, alumnos):
         matricula = fake.random_int(min=1000, max=5000)
         nombre = fake.first_name()
@@ -58,8 +59,8 @@ def data_muchos(alumnos):
     for curso in cursos:
         fecha_inicio = fake.date_between_dates(date_start=datetime(
             2021, 3, 1), date_end=datetime(2021, 12, 10))
-        fecha_fin = fake.date_between_dates(date_start=datetime(
-            2021, 3, 1), date_end=datetime(2021, 12, 10))
+        fecha_fin = fake.date_between_dates(
+            date_start=fecha_inicio, date_end=datetime(2021, 12, 10))
         print('INSERT INTO CURSOS VALUES ({},"{}","{}","{}");'.format(
             id_curso, curso, fecha_inicio, fecha_fin))
         id_curso += 1
