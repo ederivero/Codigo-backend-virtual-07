@@ -3,6 +3,8 @@ from flask import Flask, request
 from dotenv import load_dotenv
 from os import environ
 from config.conexion_bd import base_de_datos
+from flask_restful import Api
+from controllers.postre import PostresController
 from models.postre import PostreModel
 from models.preparacion import PreparacionModel
 from models.ingrediente import IngredienteModel
@@ -11,6 +13,7 @@ from models.receta import RecetaModel
 load_dotenv()
 
 app = Flask(__name__)
+api = Api(app)
 # https://docs.sqlalchemy.org/en/14/core/engines.html
 # https://flask-sqlalchemy.palletsprojects.com/en/2.x/config/#connection-uri-format
 # dialect://username:password@host:port/database
@@ -19,6 +22,11 @@ app.config['SQLALCHEMY_DATABASE_URI'] = environ.get("DATABASE_URI")
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 # iniciar la bd, para darle las credenciales definidas en el config
 base_de_datos.init_app(app)
+
+# sirve para eliminar todas las tablas y limpiar la BD
+# esto se utiliza en fases tempranas del proyecto y antes de pasar a produccion si usamos la misma bd, para limpiar la informacion falsa
+
+# base_de_datos.drop_all(app=app)
 
 # crea todas las tablas definidas en los modelos en el proyecto
 base_de_datos.create_all(app=app)
@@ -30,6 +38,9 @@ def initial_controller():
         "message": "Bienvenido a mi API de RECETAS DE POSTRES 🎂"
     }
 
+
+# DEFINO LAS RUTAS USANDO FLASK RESTFUL
+api.add_resource(PostresController, "/postres")
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -16,7 +16,7 @@ class PostreModel(base_de_datos.Model):
     # el backref creara un atributo virtual en el model del hijo (Preparacion) para que pueda acceder a todo el objeto de PostreModel sin la necesidad de hacer una sub consulta (creara un join cuando sea necesario)
     # lazy => define cuando SQLAlchemy va a cargar la data adyacente de la base de datos
     # True / 'select' => cargara todos los datos adyacentes
-    # False / 'join' => solamente cargara cuando sea necesario (cuando se utilicen dichos datos)
+    # False / 'joined' => solamente cargara cuando sea necesario (cuando se utilicen dichos datos)
     # 'subquery' => trabajara los datos PERO en una sub consulta
     # 'dynamic' => en este se pueden agregar filtros adicionales. SQLALchemy devolvera otro objeto dentro de la clase
     preparaciones = orm.relationship(
