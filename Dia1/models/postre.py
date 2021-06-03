@@ -50,3 +50,8 @@ class PostreModel(base_de_datos.Model):
             "postreNombre": self.postreNombre,
             "postrePorcion": self.postrePorcion
         }
+
+    # este metodo va con el segundo metodo de eliminacion del controller
+    def delete(self):
+        base_de_datos.session.delete(self)
+        base_de_datos.session.commit()

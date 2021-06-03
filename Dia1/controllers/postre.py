@@ -60,14 +60,63 @@ class PostreController(Resource):
         # asi es como se usa con la documentacion nativa de SQLAlchemy
         # https://docs.sqlalchemy.org/en/14/orm/query.html?highlight=filter_by#sqlalchemy.orm.Query.filter_by
         # SELECT * from postres where id = 1;
-        otro_postre = base_de_datos.session.query(
-            PostreModel).filter(PostreModel.postreId == id).first()
-        otro_postre_2 = base_de_datos.session.query(
+        # otro_postre = base_de_datos.session.query(
+        #     PostreModel).filter(PostreModel.postreId == id).first()
+        postre = base_de_datos.session.query(
             PostreModel).filter_by(postreId=id).first()
         # como la documentacion de flask sql alchemy
         # https://flask-sqlalchemy.palletsprojects.com/en/2.x/queries/#querying-records
-        postre = PostreModel.query.filter_by(postreId=id).first()
-        print(postre)
-        print(otro_postre)
-        print(otro_postre_2)
-        return 'ok'
+        # postre = PostreModel.query.filter_by(postreId=id).first()
+        return ({
+            'success': True,
+            'content': postre.json(),
+            'message': None
+        }, 200) if postre else ({
+            'success': False,
+            'content':  None,
+            'message': 'Postre no encontrado'
+        }, 404)
+
+    def put(self, id):
+        postre = base_de_datos.session.query(
+            PostreModel).filter_by(postreId=id).first()
+        if postre:
+            data = serializerPostres.parse_args()
+            postre.postreNombre = data.get('nombre')
+            postre.postrePorcion = data.get('porcion')
+            postre.save()
+
+            return {
+                'success': True,
+                'content': postre.json(),
+                'message': 'Postre actualizado correctamente'
+            }, 201
+        else:
+            return {
+                'success': False,
+                'content': None,
+                'message': 'Postre no encontrado'
+            }, 404
+
+    def delete(self, id):
+        # METODO 1
+        # postre = base_de_datos.session.query(
+        #     PostreModel).filter_by(postreId=id).delete()
+        # base_de_datos.session.commit()
+        # print(postre)
+        # METODO 2
+        postre = base_de_datos.session.query(
+            PostreModel).filter_by(postreId=id).first()
+        if postre:
+            postre.delete()
+            return {
+                'success': True,
+                'content': postre.json(),
+                'message': 'Postre eliminado exitosamente'
+            }
+        else:
+            return {
+                'success': False,
+                'content': None,
+                'message': 'Postre no existe'
+            }
