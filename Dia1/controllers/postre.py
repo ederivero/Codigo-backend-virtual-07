@@ -2,7 +2,7 @@
 # /postres GET => mostrar los postres
 from flask_restful import Resource, reqparse
 from models.postre import PostreModel
-
+from config.conexion_bd import base_de_datos
 # serializer (serializador)
 # https://flask-restful.readthedocs.io/en/latest/reqparse.html
 serializerPostres = reqparse.RequestParser(bundle_errors=True)
@@ -26,12 +26,48 @@ serializerPostres.add_argument(
 
 
 class PostresController(Resource):
+    """Sera la encarga de la gestion de todos los postres y su creacion"""
+
     def get(self):
         # SELECT * FROM postres;
-        print(PostreModel.query.all())
-        return 'ok'
+        postres = PostreModel.query.all()
+        resultado = []
+        for postre in postres:
+            print(postre.json())
+            resultado.append(postre.json())
+        return {
+            'success': True,
+            'content': resultado,
+            'message': None
+        }
 
     def post(self):
         data = serializerPostres.parse_args()
-        print(data)
+        nuevoPostre = PostreModel(nombre=data.get(
+            'nombre'), porcion=data.get('porcion'))
+        print(nuevoPostre)
+        nuevoPostre.save()
+
+        return {
+            'success': True,
+            'content': nuevoPostre.json(),
+            'message': 'Postre creado exitosamente'
+        }, 201
+
+
+class PostreController(Resource):
+    def get(self, id):
+        # asi es como se usa con la documentacion nativa de SQLAlchemy
+        # https://docs.sqlalchemy.org/en/14/orm/query.html?highlight=filter_by#sqlalchemy.orm.Query.filter_by
+        # SELECT * from postres where id = 1;
+        otro_postre = base_de_datos.session.query(
+            PostreModel).filter(PostreModel.postreId == id).first()
+        otro_postre_2 = base_de_datos.session.query(
+            PostreModel).filter_by(postreId=id).first()
+        # como la documentacion de flask sql alchemy
+        # https://flask-sqlalchemy.palletsprojects.com/en/2.x/queries/#querying-records
+        postre = PostreModel.query.filter_by(postreId=id).first()
+        print(postre)
+        print(otro_postre)
+        print(otro_postre_2)
         return 'ok'
