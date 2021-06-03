@@ -120,3 +120,25 @@ class PostreController(Resource):
                 'content': None,
                 'message': 'Postre no existe'
             }
+
+
+class BusquedaPostre(Resource):
+    serializerBusqueda = reqparse.RequestParser()
+    # se van a ubicar en el query string
+    serializerBusqueda.add_argument(
+        'nombre',
+        type=str,
+        location='args',
+        required=False,
+    )
+    serializerBusqueda.add_argument(
+        'porcion',
+        type=str,
+        location='args',
+        required=False,
+    )
+
+    def get(self):
+        filtros = self.serializerBusqueda.parse_args()
+        print(filtros)
+        return 'ok'
