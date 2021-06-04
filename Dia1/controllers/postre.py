@@ -1,6 +1,7 @@
 # un controlador es el comportamiento que va a tener mi API cuando se llame a determinada ruta
 # /postres GET => mostrar los postres
 from flask_restful import Resource, reqparse
+from werkzeug.exceptions import HTTPException
 from models.postre import PostreModel
 from config.conexion_bd import base_de_datos
 # serializer (serializador)
@@ -30,6 +31,7 @@ class PostresController(Resource):
 
     def get(self):
         # SELECT * FROM postres;
+        # base_de_datos.session.query(PostreModel).all()
         postres = PostreModel.query.all()
         resultado = []
         for postre in postres:
@@ -136,9 +138,34 @@ class BusquedaPostre(Resource):
         type=str,
         location='args',
         required=False,
+        choices=('Familiar', 'Personal', 'Mediano'),
+        help='Opcion invalida, las opciones son Familiar, Personal, Mediano'
     )
 
     def get(self):
+        # Ejercicio
+        # primero validar si hay nombre, porcion o ambos
+        # SELECT * FROM postres where porcion = '' and nombre = ''
+        # luego devolver todos los postres que hagan match con la busqueda
         filtros = self.serializerBusqueda.parse_args()
-        print(filtros)
-        return 'ok'
+        # from sqlalchemy import or_
+        # base_de_datos.session.query(PostreModel).filter_by(or_(postreNombre="3 leches", postreNombre="Selva Negra"))
+        if filtros.get('nombre') and filtros.get('porcion'):
+            resultado = base_de_datos.session.query(PostreModel).filter_by(
+                postreNombre=filtros.get('nombre'), postrePorcion=filtros.get('porcion')).all()
+            print(resultado)
+            return 'ok'
+        if filtros.get('nombre'):
+            resultado = base_de_datos.session.query(PostreModel).filter_by(
+                postreNombre=filtros.get('nombre')).all()
+            print(resultado)
+            return 'ok'
+        elif filtros.get('porcion'):
+            resultado = base_de_datos.session.query(PostreModel).filter_by(
+                postrePorcion=filtros.get('porcion')).all()
+            print(resultado)
+            return 'ok'
+        else:
+            return {
+                'message': 'Necesitas dar al menos un parametro'
+            }, 400
