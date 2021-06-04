@@ -155,7 +155,7 @@ class BusquedaPostre(Resource):
                 postreNombre=filtros.get('nombre'), postrePorcion=filtros.get('porcion')).all()
             print(resultado)
             return 'ok'
-        if filtros.get('nombre'):
+        elif filtros.get('nombre'):
             resultado = base_de_datos.session.query(PostreModel).filter_by(
                 postreNombre=filtros.get('nombre')).all()
             print(resultado)
