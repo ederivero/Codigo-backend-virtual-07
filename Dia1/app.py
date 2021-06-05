@@ -45,7 +45,7 @@ api.add_resource(BusquedaPostre, "/busqueda_postre")
 api.add_resource(PreparacionesController, "/preparaciones",
                  "/preparaciones/<int:postre_id>")
 api.add_resource(IngredientesController, "/ingredientes")
-api.add_resource(IngredienteController, "/ingrediente/<int:id>")
+api.add_resource(IngredienteController, "/ingredientes/<int:id>")
 
 
 if __name__ == '__main__':

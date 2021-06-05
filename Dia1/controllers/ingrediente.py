@@ -45,7 +45,7 @@ class IngredienteController(Resource):
         if ingrediente:
             return {
                 "success": True,
-                "content": ingrediente,
+                "content": ingrediente.json(),
                 "message": None
             }
         else:
@@ -64,7 +64,7 @@ class IngredienteController(Resource):
             ingrediente.save()
             return {
                 "success": True,
-                "content": ingrediente,
+                "content": ingrediente.json(),
                 "message": None
             }
         else:
