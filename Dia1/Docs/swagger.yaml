@@ -1,0 +1,335 @@
+swagger: '2.0'
+info:
+  description: "API del manejo de los ingredientes de una reposteria"
+  version: '1.0'
+  title: Reposteria
+  contact: 
+    email: "ederiveroman@gmail.com"
+    name: "Eduardo de Rivero"
+host: '127.0.0.1:5000'
+basePath: /
+schemes:
+  - https
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  /postres:
+    post:
+      description: Endpoint para crear un nuevo postre
+      summary: /postres
+      tags:
+        - Postres
+      operationId: /postres
+      deprecated: false
+      produces:
+        - application/json
+      parameters:
+        - name: Body
+          in: body
+          required: true
+          description: ''
+          schema:
+            $ref: '#/definitions/~1postresrequest'
+      responses:
+        '200':
+          description: ''
+          headers: {}
+    get:
+      description: Endpoint que devuelve todos los postres
+      summary: /postres
+      tags:
+        - Postres
+      operationId: Get/postres
+      deprecated: false
+      produces:
+        - application/json
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          headers: {}
+  /postres/{id}:
+    get:
+      summary: /postres/<id>
+      tags:
+        - Postres
+      operationId: /postres/<id>
+      deprecated: false
+      produces:
+        - application/json
+      parameters: 
+      - name: "id"
+        in: "path"
+        description: "Id del postre"
+        required: true
+        type: "integer"
+      responses:
+        '200':
+          description: ''
+          headers: {}
+    put:
+      summary: /postres/<id>
+      tags:
+        - Postres
+      operationId: Put/postres/<id>
+      deprecated: false
+      produces:
+        - application/json
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "Id del postre"
+          required: true
+          type: "integer"
+        
+        - name: Body
+          in: body
+          required: true
+          description: ''
+          schema:
+            $ref: '#/definitions/~1postres~1%3Cid%3Erequest'
+      responses:
+        '200':
+          description: ''
+          headers: {}
+    delete:
+      summary: "Con esto eliminas un postre"
+      tags:
+        - Postres
+      operationId: /postres/<id>1
+      deprecated: false
+      produces:
+        - application/json
+      parameters: 
+        - name: "id"
+          in: "path"
+          description: "Id del postre"
+          required: true
+          type: "integer"
+      responses:
+        '200':
+          description: ''
+          headers: {}
+  /busqueda_postre:
+    get:
+      summary: /busqueda_postre
+      tags:
+        - Postres
+      operationId: /busqueda_postre
+      deprecated: false
+      produces:
+        - application/json
+      parameters:
+        - name: nombre
+          in: query
+          required: false
+          type: string
+          description: 'Nombre completo del postre'
+        - name: porcion
+          in: query
+          required: false
+          type: "array"
+          description: ''
+          items:
+            type: "string"
+            enum:
+            - "Personal"
+            - "Familiar"
+            - "Mediano"
+      responses:
+        '200':
+          description: ''
+          headers: {}
+  /preparaciones:
+    post:
+      description: Endpoint para agregar una preparacion
+      summary: /preparaciones
+      tags:
+        - Preparacion
+      operationId: /preparaciones
+      deprecated: false
+      produces:
+        - application/json
+      parameters:
+        - name: Body
+          in: body
+          required: true
+          description: ''
+          schema:
+            $ref: '#/definitions/~1preparacionesrequest'
+      responses:
+        '200':
+          description: ''
+          headers: {}
+  /preparaciones/{id}:
+    get:
+      summary: '/preparaciones/<int:id>'
+      tags:
+        - Preparacion
+      operationId: '/preparaciones/<int:id>'
+      deprecated: false
+      produces:
+        - application/json
+      parameters: 
+      - name: "id"
+        in: "path"
+        description: "Id del postre"
+        required: true
+        type: "integer"
+      responses:
+        '200':
+          description: ''
+          headers: {}
+  /ingredientes:
+    get:
+      description: Endpoint para visualizar todos los ingredientes
+      summary: /ingredientes
+      tags:
+        - Ingredientes
+      operationId: /ingredientes
+      deprecated: false
+      produces:
+        - application/json
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          headers: {}
+    post:
+      description: Endpoint para la creacion de un ingrediente
+      summary: /ingredientes
+      tags:
+        - Ingredientes
+      operationId: Post/ingredientes
+      deprecated: false
+      produces:
+        - application/json
+      parameters:
+        - name: Body
+          in: body
+          required: true
+          description: ''
+          schema:
+            $ref: '#/definitions/~1ingredientesrequest'
+      responses:
+        '200':
+          description: ''
+          headers: {}
+  /ingredientes/{id}:
+    get:
+      summary: '/ingredientes/<int:id>'
+      tags:
+        - Ingredientes
+      operationId: '/ingredientes/<int:id>'
+      deprecated: false
+      produces:
+        - application/json
+      parameters: 
+        - name: "id"
+          in: "path"
+          description: "Id del postre"
+          required: true
+          type: "integer"
+      responses:
+        '200':
+          description: ''
+          headers: {}
+    put:
+      summary: '/ingredientes/<int:id>'
+      tags:
+        - Ingredientes
+      operationId: 'Put/ingredientes/<int:id>'
+      deprecated: false
+      produces:
+        - application/json
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "Id del postre"
+          required: true
+          type: "integer"
+        - name: Body
+          in: body
+          required: true
+          description: ''
+          schema:
+            $ref: '#/definitions/~1ingredientes~1%3Cint%3Aid%3Erequest'
+      responses:
+        '200':
+          description: ''
+          headers: {}
+definitions:
+  /postresrequest:
+    title: /postresrequest
+    example:
+      nombre: Suspiro a la limeña
+      porcion: Personal
+    type: object
+    properties:
+      nombre:
+        type: string
+      porcion:
+        type: string
+    required:
+      - nombre
+      - porcion
+  /postres/<id>request:
+    title: /postres/<id>request
+    example:
+      nombre: Tiramizu
+      porcion: Familiar
+    type: object
+    properties:
+      nombre:
+        type: string
+      porcion:
+        type: string
+    required:
+      - nombre
+      - porcion
+  /preparacionesrequest:
+    title: /preparacionesrequest
+    example:
+      orden: 1
+      descripcion: Medir los ingredientes y tenerlos listos
+      postre_id: 7
+    type: object
+    properties:
+      orden:
+        type: integer
+        format: int32
+      descripcion:
+        type: string
+      postre_id:
+        type: integer
+        format: int32
+    required:
+      - orden
+      - descripcion
+      - postre_id
+  /ingredientesrequest:
+    title: /ingredientesrequest
+    example:
+      nombre: Escencia de vainilla
+    type: object
+    properties:
+      nombre:
+        type: string
+    required:
+      - nombre
+  '/ingredientes/<int:id>request':
+    title: '/ingredientes/<int:id>request'
+    example:
+      nombre: Polvo de hornear
+    type: object
+    properties:
+      nombre:
+        type: string
+    required:
+      - nombre
+tags:
+  - name: Postres
+  - name: Preparacion
+  - name: Ingredientes
