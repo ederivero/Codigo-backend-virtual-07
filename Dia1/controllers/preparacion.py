@@ -81,5 +81,28 @@ class PreparacionesController(Resource):
                 "message": "Postre no existe"
             }, 400
 
-    def get(self):
-        pass
+    def get(self, postre_id):
+        # SELECT orden, descripcion FROM preparaciones where postre_id = %s;
+        # print(base_de_datos.session.query(PreparacionModel).filter_by(
+        #     postre=postre_id).with_entities(PreparacionModel.preparacionDescripcion, PreparacionModel.preparacionOrden).all())
+        data = base_de_datos.session.query(PreparacionModel).filter_by(
+            postre=postre_id).order_by(PreparacionModel.preparacionOrden.asc()).all()
+        if data:
+            resultadoGeneral = data[0].preparacionPostre.json()
+            resultado = []
+            for preparacion in data:
+                print(preparacion.preparacionPostre.json())
+                resultado.append(preparacion.json())
+
+            resultadoGeneral['preparaciones'] = resultado
+            return {
+                "success": True,
+                "content": resultadoGeneral,
+                "message": None
+            }
+        else:
+            return {
+                "success": True,
+                "content": None,
+                "message": "El postre aun no tiene preparaciones"
+            }, 200

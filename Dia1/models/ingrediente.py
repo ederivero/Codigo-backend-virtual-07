@@ -14,3 +14,13 @@ class IngredienteModel(base_de_datos.Model):
 
     def __init__(self, nombre):
         self.ingredienteNombre = nombre
+
+    def save(self):
+        base_de_datos.session.add(self)
+        base_de_datos.session.commit()
+
+    def json(self):
+        return {
+            "id": self.ingredienteId,
+            "nombre": self.ingredienteNombre
+        }
