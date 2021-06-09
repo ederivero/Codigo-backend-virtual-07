@@ -1,6 +1,6 @@
 from flask_restful import Resource, reqparse
 from models.usuario import UsuarioModel
-from re import search
+from re import search, fullmatch
 from sqlalchemy.exc import IntegrityError
 
 
@@ -52,7 +52,15 @@ class RegistroController(Resource):
         nombre = data.get('nombre')
         apellido = data.get('apellido')
         password = data.get('password')
-        if search(patron_correo, correo):
+        # VALIDAR MEDIANTE REGEXP si la contraseña tiene al menos 8 caracteres de longitud y al menos un numero, una letra min, una letra mayus
+        # al menos una minus, mayus, un numero y un caracter especial @$!%*#&?
+        # (m,n) => coincidencia entre esos patrones
+        # * => match entre 0 y mas repeticiones
+        # . => match con cualquier caracter excepto un salto de linea
+        # [...] => match con cualquiera de los caracteres indicados dentro de los corchetes
+        patron_password = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#&?])[A-Za-z\d@$!%*#&?]{6,}$'
+        # fullmatch => require el string completo para que cumpla la expresion regular y no solamente una porcion
+        if search(patron_correo, correo) and fullmatch(patron_password, password):
             try:
                 nuevoUsuario = UsuarioModel(nombre, apellido, correo, password)
                 nuevoUsuario.save()
