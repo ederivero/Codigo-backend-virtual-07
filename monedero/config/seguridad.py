@@ -9,7 +9,7 @@ class Usuario:
         self.username = username
 
     def __str__(self):
-        return "Usuario con el id =%s y username= %s" % (self.id, self.username)
+        return "Usuario con el id ='%s' y username='%s'" % (self.id, self.username)
 
 
 def autenticador(username, password):
@@ -23,7 +23,9 @@ def autenticador(username, password):
         if usuario:
             # valido su password
             # la funcion checkpw toma dos parametros, el primero es la contraseña actual y el segundo es la contraseña almacenada en la bd, internamente las validara y si son, retornara True, caso contrario retornara False
-            if checkpw(bytes(password, 'utf-8'), usuario.usuarioPassword):
+
+            if checkpw(bytes(password, 'utf-8'), bytes(usuario.usuarioPassword, 'utf-8')):
+                print("Es el usuario")
                 # si la contraseña es correcta
                 # esto me servira para agregarlo en el payload (la parte intermedia de la jwt)
                 return Usuario(usuario.usuarioId, usuario.usuarioCorreo)

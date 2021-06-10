@@ -86,5 +86,5 @@ class RegistroController(Resource):
             return {
                 "success": False,
                 "content": None,
-                "message": "Correo incorrecto"
+                "message": "Correo o password incorrecto"
             }, 400
