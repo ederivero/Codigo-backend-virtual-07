@@ -1,5 +1,6 @@
 from flask import Flask, request
 from flask_restful import Api
+from sqlalchemy.sql.operators import notmatch_op
 from controllers.usuario import RegistroController
 from controllers.movimiento import MovimientosController
 from models.sesion import SesionModel
@@ -10,6 +11,9 @@ from flask_jwt import JWT
 from config.seguridad import autenticador, identificador
 from config.custom_jwt import manejo_error_JWT
 from datetime import timedelta
+# sirve para que en el nombre del archivo que manda el cliente antes de guardarlo, lo valide y evite que se guarde con caracteres especiales que puedan malograr el funcionamiento de la api o guardar de una forma incorrecta
+from werkzeug.utils import secure_filename
+from uuid import uuid4
 load_dotenv()
 
 app = Flask(__name__)
@@ -26,7 +30,7 @@ app.config['JWT_AUTH_USERNAME_KEY'] = 'correo'
 app.config['JWT_AUTH_PASSWORD_KEY'] = 'pass'
 # Si estamos subiendo archivos, para poner un tope usaremos la variable MAX_CONTENT_LENGTH
 # 1 byte  * 1024 => 1Kb * 1024 => 1 Mb * 1024 => 1 Gb
-app.config['MAX_CONTENT_LENGTH'] = 1 * 1024 * 1024
+app.config['MAX_CONTENT_LENGTH'] = 5 * 1024 * 1024
 
 jsonwebtoken = JWT(app=app, authentication_handler=autenticador,
                    identity_handler=identificador)
@@ -58,7 +62,13 @@ def subir_archivo():
     # para saber el tipo de archivo
     print(archivo.mimetype)  # image/jpg image/png  application/vnd.rar
     if archivos_permitidos(archivo.filename):
-        archivo.save(path.join("multimedia", archivo.filename))
+        # primero saco el formato del archivo
+        formato_archivo = archivo.filename.rsplit(".", 1)[-1]
+        # genero un uuid y le agrego la extension
+        nombre_archivo = str(uuid4())+'.'+formato_archivo
+        # aca validara que no existan caracteres especial que puedan romper el funcionamiento de mi api
+        nombre_archivo = secure_filename(nombre_archivo)
+        archivo.save(path.join("multimedia", nombre_archivo))
         return 'ok'
     else:
         return 'archivo no permitido'
