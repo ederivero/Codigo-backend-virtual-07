@@ -2,6 +2,12 @@ from flask_restful import Resource, reqparse
 from models.usuario import UsuarioModel
 from re import search, fullmatch
 from sqlalchemy.exc import IntegrityError
+from cryptography.fernet import Fernet
+from os import environ
+from dotenv import load_dotenv
+import json
+from datetime import datetime, timedelta
+load_dotenv()
 
 
 class RegistroController(Resource):
@@ -88,3 +94,42 @@ class RegistroController(Resource):
                 "content": None,
                 "message": "Correo o password incorrecto"
             }, 400
+
+
+class ForgotPasswordController(Resource):
+    serializer = reqparse.RequestParser(bundle_errors=True)
+    serializer.add_argument(
+        "correo",
+        type=str,
+        required=True,
+        location='json',
+        help='Falta el correo'
+    )
+
+    def post(self):
+        data = self.serializer.parse_args()
+        correo = data['correo']
+        # return {
+        #     "message": "Usuario no encontrado",
+        #     "content": None,
+        #     "success": False
+        # }, 404
+
+        # TODO : VALIDAR QUE ES UN CORREO VALIDO Y LUEGO BUSCAR SI EXISTE EL USUARIO CON ESE CORREO, SINO EXISTE NO PROCEDER Y RETORNAR EL MENSAJE QUE NO EXISTE.
+        # ----------------------------------------------
+        # YOUR CODE HERE
+        # ----------------------------------------------
+        # inicio mi objeto Fernet con la clave definida en mi variable de entorno
+        fernet = Fernet(environ.get("FERNET_SECRET"))
+        # creo un payload que sera lo que mandare por el correo indicando la fecha de caducidad, y el correo
+        payload = {
+            "fecha_caducidad": str(datetime.now()+timedelta(minutes=30)),
+            "correo": correo
+        }
+        print(payload)
+        # el metodo dumps convierte un diccionario a un json
+        payload_json = json.dumps(payload)
+        # encripto ese payload a un hash listo para mandarlo por el correo
+        token = fernet.encrypt(bytes(payload_json, 'utf-8'))
+        print(token)
+        return 'ok'

@@ -1,6 +1,6 @@
 from flask import Flask, request, send_file
 from flask_restful import Api
-from controllers.usuario import RegistroController
+from controllers.usuario import RegistroController, ForgotPasswordController
 from controllers.movimiento import MovimientosController
 from models.sesion import SesionModel
 from os import environ, path, remove
@@ -15,10 +15,11 @@ from werkzeug.utils import secure_filename
 from uuid import uuid4
 load_dotenv()
 
+UPLOAD_FOLDER = 'multimedia'
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = environ.get("DATABASE_URI")
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SECRET_KEY'] = 'claveSecreta'
+app.config['SECRET_KEY'] = environ.get("JWT_SECRET")
 # para modificar la fecha de caducidad de la token, su valor x default es 600 segundos
 app.config['JWT_EXPIRATION_DELTA'] = timedelta(hours=1)
 # para modificar el endpoint del login
@@ -67,7 +68,7 @@ def subir_archivo():
         nombre_archivo = str(uuid4())+'.'+formato_archivo
         # aca validara que no existan caracteres especial que puedan romper el funcionamiento de mi api
         nombre_archivo = secure_filename(nombre_archivo)
-        archivo.save(path.join("multimedia", nombre_archivo))
+        archivo.save(path.join(UPLOAD_FOLDER, nombre_archivo))
         return {
             "success": True,
             "content": request.host_url+'media/' + nombre_archivo,
@@ -84,15 +85,15 @@ def subir_archivo():
 @app.route("/media/<string:nombre>", methods=['GET'])
 def devolver_archivo(nombre):
     try:
-        return send_file(path.join("multimedia", nombre))
+        return send_file(path.join(UPLOAD_FOLDER, nombre))
     except:
-        return send_file(path.join("multimedia", "not_found.png")), 404
+        return send_file(path.join(UPLOAD_FOLDER, "not_found.png")), 404
 
 
 @app.route("/eliminarArchivo/<string:nombre>", methods=['DELETE'])
 def eliminar_archivo(nombre):
     try:
-        remove(path.join("multimedia", nombre))
+        remove(path.join(UPLOAD_FOLDER, nombre))
         return {
             "success": True,
             "content": None,
@@ -108,6 +109,7 @@ def eliminar_archivo(nombre):
 
 api.add_resource(RegistroController, "/registro")
 api.add_resource(MovimientosController, "/movimientos")
+api.add_resource(ForgotPasswordController, "/olvido-password")
 
 if __name__ == '__main__':
     app.run(debug=True)
