@@ -1,2 +1,5 @@
 .env
 __pycache__/
+multimedia/*
+# ACEPTAR UN ARCHIVO LUEGO DE EXCLUIR TODA UNA CARPETA
+!multimedia/not_found.png

@@ -1,10 +1,9 @@
-from flask import Flask, request
+from flask import Flask, request, send_file
 from flask_restful import Api
-from sqlalchemy.sql.operators import notmatch_op
 from controllers.usuario import RegistroController
 from controllers.movimiento import MovimientosController
 from models.sesion import SesionModel
-from os import environ, path
+from os import environ, path, remove
 from dotenv import load_dotenv
 from config.conexion_bd import base_de_datos
 from flask_jwt import JWT
@@ -69,9 +68,42 @@ def subir_archivo():
         # aca validara que no existan caracteres especial que puedan romper el funcionamiento de mi api
         nombre_archivo = secure_filename(nombre_archivo)
         archivo.save(path.join("multimedia", nombre_archivo))
-        return 'ok'
+        return {
+            "success": True,
+            "content": request.host_url+'media/' + nombre_archivo,
+            "message": "archivo registrado exitosamente"
+        }
     else:
-        return 'archivo no permitido'
+        return {
+            "success": False,
+            "content": None,
+            "message": 'archivo no permitido'
+        }, 400
+
+
+@app.route("/media/<string:nombre>", methods=['GET'])
+def devolver_archivo(nombre):
+    try:
+        return send_file(path.join("multimedia", nombre))
+    except:
+        return send_file(path.join("multimedia", "not_found.png")), 404
+
+
+@app.route("/eliminarArchivo/<string:nombre>", methods=['DELETE'])
+def eliminar_archivo(nombre):
+    try:
+        remove(path.join("multimedia", nombre))
+        return {
+            "success": True,
+            "content": None,
+            "message": "Archivo eliminado exitosamente"
+        }
+    except:
+        return {
+            "success": False,
+            "content": None,
+            "message": "Archivo no encontrado"
+        }, 404
 
 
 api.add_resource(RegistroController, "/registro")
