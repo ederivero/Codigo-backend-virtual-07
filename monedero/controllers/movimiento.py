@@ -48,6 +48,7 @@ class MovimientosController(Resource):
     @jwt_required()
     def post(self):
         print("La identidad es ")
+        # esto funcionara en base al identificador de config/segudirad.py ya que al validar la identificacion me retornara el objeto del usuario con su metodo json
         print(current_identity)
         data = self.movimientoSerializer.parse_args()
         print(data)
@@ -62,9 +63,15 @@ class MovimientosController(Resource):
             # strftime => conviente de una FECHA a un STRING
             fecha = datetime.strptime(data['fecha'], '%Y-%m-%d %H:%M:%S')
             # fecha_en_texto = fecha.strftime('%Y-%m-%d %H:%M:%S')
-
-            print(type(fecha))
-            return 'ok'
+            nuevoMovimiento = MovimientoModel(data['nombre'], data['monto'], fecha,
+                                              data['imagen'], data['tipo'], current_identity.get
+                                              ('usuarioId'))
+            nuevoMovimiento.save()
+            return {
+                "success": True,
+                "message": "Movimiento registrado exitosamente",
+                "content": nuevoMovimiento.json(),
+            }
         except:
             return {
                 "success": False,
