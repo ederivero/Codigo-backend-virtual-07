@@ -184,12 +184,14 @@ class ResetPasswordController(Resource):
                 usuarioCorreo=data['correo']).first()
             if usuario:
                 if fullmatch(PATRON_PASSWORD, data['new_password']):
+                    print(usuario.usuarioPassword)
                     passwordBytes = bytes(data['new_password'], "utf-8")
                     passwordHash = bcrypt.hashpw(
                         passwordBytes, bcrypt.gensalt())
                     passwordString = passwordHash.decode("utf-8")
                     usuario.usuarioPassword = passwordString
                     usuario.save()
+                    print(usuario.usuarioPassword)
                     return {
                         "success": True,
                         "content": usuario.json(),
