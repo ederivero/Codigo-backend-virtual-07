@@ -1,7 +1,6 @@
 from flask import Flask, request, send_file, render_template
 from flask_restful import Api
 from controllers.usuario import RegistroController, ForgotPasswordController
-from models.usuario import UsuarioModel
 from controllers.movimiento import MovimientosController
 from models.sesion import SesionModel
 from os import environ, path, remove
@@ -15,6 +14,10 @@ from datetime import timedelta
 from werkzeug.utils import secure_filename
 from uuid import uuid4
 from flask_cors import CORS
+from cryptography.fernet import Fernet
+import json
+from datetime import datetime
+
 load_dotenv()
 
 UPLOAD_FOLDER = 'multimedia'
@@ -115,10 +118,27 @@ def inicio():
     return render_template('index.jinja', mensaje='Hola amigos como estan?', texto='Yo soy otro texto')
 
 
-@app.route("/recuperarPassword/<string:hash>")
-def recuperar_password(hash):
-    print(hash)
-    return render_template('recovery_password.jinja', mensaje='Hola amigos como estan?', texto='Yo soy otro texto')
+@app.route("/recuperarPassword/<string:token>")
+def recuperar_password(token):
+    print(token)
+    fernet = Fernet(environ.get("FERNET_SECRET"))
+    # decrypt(b'token')
+    # el metodo decrypt recibe una token pero en formato de bytes y luego si es que cumple con la contraseña devolvera el mensaje encriptado pero en bytes, y para convertirlo a string usarmos el metodo decode
+    try:
+        respuesta = fernet.decrypt(bytes(token, 'utf-8')).decode('utf-8')
+        # el metodo loads convierte un json a un diccionario
+        respuesta_diccionario = json.loads(respuesta)
+        fecha_caducidad = datetime.strptime(
+            respuesta_diccionario['fecha_caducidad'], '%Y-%m-%d %H:%M:%S.%f')
+        # si la fecha de caducidad es mayor que la hora actual, aun se podra realizar el cambio de contraseña, caso contrario, indicar que la token ya vencio
+        if fecha_caducidad > datetime.now():
+            return render_template('recovery_password.jinja', correo=respuesta_diccionario['correo'])
+        else:
+            return render_template('bad_token.jinja')
+
+    except Exception as e:
+        print(e)
+        return render_template('bad_token.jinja')
 
 
 api.add_resource(RegistroController, "/registro")
