@@ -1,4 +1,4 @@
-from flask_restful import Resource, reqparse
+from flask_restful import Resource, reqparse, request
 from models.usuario import UsuarioModel
 from re import search, fullmatch
 from sqlalchemy.exc import IntegrityError
@@ -6,8 +6,12 @@ from cryptography.fernet import Fernet
 from os import environ
 from dotenv import load_dotenv
 import json
+from config.conexion_bd import base_de_datos
 from datetime import datetime, timedelta
+from utils.enviar_correo_puro import enviarCorreo
 load_dotenv()
+
+PATRON_CORREO = '^[a-zA-Z0-9]+[\._]?[a-zA-Z0-9]+[@]\w+[.]\w{2,3}$'
 
 
 class RegistroController(Resource):
@@ -54,7 +58,6 @@ class RegistroController(Resource):
         # [.] => luego si o si tiene que haber un .
         # {2,3} => indico que ese texto alfanumerico va a tener una longitud minima de 2 y una maxima de 3 caracteres
         # $ => indica que tiene que coincidir el final de la cadena
-        patron_correo = '^[a-zA-Z0-9]+[\._]?[a-zA-Z0-9]+[@]\w+[.]\w{2,3}$'
         nombre = data.get('nombre')
         apellido = data.get('apellido')
         password = data.get('password')
@@ -66,7 +69,7 @@ class RegistroController(Resource):
         # [...] => match con cualquiera de los caracteres indicados dentro de los corchetes
         patron_password = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#&?])[A-Za-z\d@$!%*#&?]{6,}$'
         # fullmatch => require el string completo para que cumpla la expresion regular y no solamente una porcion
-        if search(patron_correo, correo) and fullmatch(patron_password, password):
+        if search(PATRON_CORREO, correo) and fullmatch(patron_password, password):
             try:
                 nuevoUsuario = UsuarioModel(nombre, apellido, correo, password)
                 nuevoUsuario.save()
@@ -109,27 +112,47 @@ class ForgotPasswordController(Resource):
     def post(self):
         data = self.serializer.parse_args()
         correo = data['correo']
-        # return {
-        #     "message": "Usuario no encontrado",
-        #     "content": None,
-        #     "success": False
-        # }, 404
 
-        # TODO : VALIDAR QUE ES UN CORREO VALIDO Y LUEGO BUSCAR SI EXISTE EL USUARIO CON ESE CORREO, SINO EXISTE NO PROCEDER Y RETORNAR EL MENSAJE QUE NO EXISTE.
-        # ----------------------------------------------
-        # YOUR CODE HERE
-        # ----------------------------------------------
-        # inicio mi objeto Fernet con la clave definida en mi variable de entorno
-        fernet = Fernet(environ.get("FERNET_SECRET"))
-        # creo un payload que sera lo que mandare por el correo indicando la fecha de caducidad, y el correo
-        payload = {
-            "fecha_caducidad": str(datetime.now()+timedelta(minutes=30)),
-            "correo": correo
-        }
-        print(payload)
-        # el metodo dumps convierte un diccionario a un json
-        payload_json = json.dumps(payload)
-        # encripto ese payload a un hash listo para mandarlo por el correo
-        token = fernet.encrypt(bytes(payload_json, 'utf-8'))
-        print(token)
-        return 'ok'
+        if search(PATRON_CORREO, correo):
+            # es un correo valido
+            usuario = base_de_datos.session.query(
+                UsuarioModel).filter_by(usuarioCorreo=correo).first()
+            if not usuario:
+                return {
+                    "success": False,
+                    "content": None,
+                    "message": "Usuario no registrado"
+                }, 400
+            fernet = Fernet(environ.get("FERNET_SECRET"))
+            # creo un payload que sera lo que mandare por el correo indicando la fecha de caducidad, y el correo
+            payload = {
+                "fecha_caducidad": str(datetime.now()+timedelta(minutes=30)),
+                "correo": correo
+            }
+            # print(payload)
+            # el metodo dumps convierte un diccionario a un json
+            payload_json = json.dumps(payload)
+            # encripto ese payload a un hash listo para mandarlo por el correo
+            token = fernet.encrypt(bytes(payload_json, 'utf-8'))
+            # print(token)
+            link = request.host_url+'/recuperarPassword/'+token.decode('utf-8')
+            respuesta = enviarCorreo(
+                usuario.usuarioCorreo, usuario.usuarioNombre, link)
+            if respuesta:
+                return {
+                    "success": True,
+                    "content": None,
+                    "message": "Correo enviado exitosamente"
+                }
+            else:
+                return {
+                    "success": False,
+                    "content": None,
+                    "message": "Error al enviar el correo, intente nuevamente"
+                }, 500
+        else:
+            return {
+                "success": False,
+                "content": None,
+                "message": "Formato de correo incorrecto"
+            }, 400

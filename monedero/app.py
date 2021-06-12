@@ -109,7 +109,7 @@ def eliminar_archivo(nombre):
 
 api.add_resource(RegistroController, "/registro")
 api.add_resource(MovimientosController, "/movimientos")
-api.add_resource(ForgotPasswordController, "/olvido-password")
+api.add_resource(ForgotPasswordController, "/olvide-password")
 
 if __name__ == '__main__':
     app.run(debug=True)
