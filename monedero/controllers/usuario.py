@@ -135,7 +135,7 @@ class ForgotPasswordController(Resource):
             # encripto ese payload a un hash listo para mandarlo por el correo
             token = fernet.encrypt(bytes(payload_json, 'utf-8'))
             # print(token)
-            link = request.host_url+'/recuperarPassword/'+token.decode('utf-8')
+            link = request.host_url+'recuperarPassword/'+token.decode('utf-8')
             respuesta = enviarCorreo(
                 usuario.usuarioCorreo, usuario.usuarioNombre, link)
             if respuesta:

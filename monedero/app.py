@@ -1,6 +1,7 @@
-from flask import Flask, request, send_file
+from flask import Flask, request, send_file, render_template
 from flask_restful import Api
 from controllers.usuario import RegistroController, ForgotPasswordController
+from models.usuario import UsuarioModel
 from controllers.movimiento import MovimientosController
 from models.sesion import SesionModel
 from os import environ, path, remove
@@ -13,10 +14,12 @@ from datetime import timedelta
 # sirve para que en el nombre del archivo que manda el cliente antes de guardarlo, lo valide y evite que se guarde con caracteres especiales que puedan malograr el funcionamiento de la api o guardar de una forma incorrecta
 from werkzeug.utils import secure_filename
 from uuid import uuid4
+from flask_cors import CORS
 load_dotenv()
 
 UPLOAD_FOLDER = 'multimedia'
 app = Flask(__name__)
+CORS(app=app)
 app.config['SQLALCHEMY_DATABASE_URI'] = environ.get("DATABASE_URI")
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = environ.get("JWT_SECRET")
@@ -105,6 +108,17 @@ def eliminar_archivo(nombre):
             "content": None,
             "message": "Archivo no encontrado"
         }, 404
+
+
+@app.route("/", methods=['GET'])
+def inicio():
+    return render_template('index.jinja', mensaje='Hola amigos como estan?', texto='Yo soy otro texto')
+
+
+@app.route("/recuperarPassword/<string:hash>")
+def recuperar_password(hash):
+    print(hash)
+    return render_template('recovery_password.jinja', mensaje='Hola amigos como estan?', texto='Yo soy otro texto')
 
 
 api.add_resource(RegistroController, "/registro")
