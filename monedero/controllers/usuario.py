@@ -173,7 +173,7 @@ class ResetPasswordController(Resource):
         'new_password',
         type=str,
         required=True,
-        help='Falta el correo',
+        help='Falta el new_password',
         location='json'
     )
 

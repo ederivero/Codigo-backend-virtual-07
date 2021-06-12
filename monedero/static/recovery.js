@@ -2,11 +2,16 @@ const password = document.getElementById("password");
 const btn_enviar = document.getElementById("btn_reset_password");
 const correo = document.getElementById("correo");
 
-btn_enviar.addEventListener("click", (evento) => {
+btn_enviar.addEventListener("click", async (evento) => {
   evento.preventDefault();
   console.log("me hizo click");
-  const cuerpo = {};
-  fetch("http://127.0.0.1:5000/reset-password", {
+  const cuerpo = {
+    correo: correo.innerText,
+    new_password: password.value,
+  };
+
+  console.log(cuerpo);
+  const response = await fetch("http://127.0.0.1:5000/reset-password", {
     method: "POST",
     body: JSON.stringify(cuerpo),
     headers: {
@@ -21,9 +26,34 @@ btn_enviar.addEventListener("click", (evento) => {
       return response.json();
     })
     .then((json) => {
+      if (json.success) {
+        Swal.fire({
+          title: "Contraseña cambiada exitosamente",
+          text: json.message,
+          icon: "success",
+          confirmButtonText: "Ok",
+        }).then((result) => {
+          console.log(result);
+          location.replace(location.origin);
+        });
+      } else {
+        Swal.fire({
+          title: "Error!",
+          text: json.message,
+          icon: "error",
+          timer: 5000,
+          showConfirmButton: false,
+        });
+      }
       console.log(json);
     })
     .catch((error) => {
+      // ingresara cuando el request no se logrado exitosamente, cors o el endpoint este incorrecto
+      Swal.fire({
+        title: "Error!",
+        text: "Error de peticion",
+        icon: "error",
+      });
       console.error(error);
     });
 });
