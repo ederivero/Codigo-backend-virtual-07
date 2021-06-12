@@ -9,9 +9,11 @@ import json
 from config.conexion_bd import base_de_datos
 from datetime import datetime, timedelta
 from utils.enviar_correo_puro import enviarCorreo
+import bcrypt
 load_dotenv()
 
 PATRON_CORREO = '^[a-zA-Z0-9]+[\._]?[a-zA-Z0-9]+[@]\w+[.]\w{2,3}$'
+PATRON_PASSWORD = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#&?])[A-Za-z\d@$!%*#&?]{6,}$'
 
 
 class RegistroController(Resource):
@@ -67,9 +69,9 @@ class RegistroController(Resource):
         # * => match entre 0 y mas repeticiones
         # . => match con cualquier caracter excepto un salto de linea
         # [...] => match con cualquiera de los caracteres indicados dentro de los corchetes
-        patron_password = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#&?])[A-Za-z\d@$!%*#&?]{6,}$'
+
         # fullmatch => require el string completo para que cumpla la expresion regular y no solamente una porcion
-        if search(PATRON_CORREO, correo) and fullmatch(patron_password, password):
+        if search(PATRON_CORREO, correo) and fullmatch(PATRON_PASSWORD, password):
             try:
                 nuevoUsuario = UsuarioModel(nombre, apellido, correo, password)
                 nuevoUsuario.save()
@@ -150,6 +152,61 @@ class ForgotPasswordController(Resource):
                     "content": None,
                     "message": "Error al enviar el correo, intente nuevamente"
                 }, 500
+        else:
+            return {
+                "success": False,
+                "content": None,
+                "message": "Formato de correo incorrecto"
+            }, 400
+
+
+class ResetPasswordController(Resource):
+    serializer = reqparse.RequestParser(bundle_errors=True)
+    serializer.add_argument(
+        'correo',
+        type=str,
+        required=True,
+        help='Falta el correo',
+        location='json'
+    )
+    serializer.add_argument(
+        'new_password',
+        type=str,
+        required=True,
+        help='Falta el correo',
+        location='json'
+    )
+
+    def post(self):
+        data = self.serializer.parse_args()
+        if search(PATRON_CORREO, data['correo']):
+            usuario = base_de_datos.session.query(UsuarioModel).filter_by(
+                usuarioCorreo=data['correo']).first()
+            if usuario:
+                if fullmatch(PATRON_PASSWORD, data['new_password']):
+                    passwordBytes = bytes(data['new_password'], "utf-8")
+                    passwordHash = bcrypt.hashpw(
+                        passwordBytes, bcrypt.gensalt())
+                    passwordString = passwordHash.decode("utf-8")
+                    usuario.usuarioPassword = passwordString
+                    usuario.save()
+                    return {
+                        "success": True,
+                        "content": usuario.json(),
+                        "message": "La contraseña se actualizo exitosamente"
+                    }
+                else:
+                    return {
+                        "success": False,
+                        "content": None,
+                        "message": "La contraseña debe de tener al menos 6 caracteres , una mayus, una minus, un numero y un caracter especial"
+                    }
+            else:
+                return {
+                    "success": False,
+                    "content": None,
+                    "message": "Usuario no encontrado"
+                }, 400
         else:
             return {
                 "success": False,

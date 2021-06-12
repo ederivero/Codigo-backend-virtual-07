@@ -1,6 +1,6 @@
 from flask import Flask, request, send_file, render_template
 from flask_restful import Api
-from controllers.usuario import RegistroController, ForgotPasswordController
+from controllers.usuario import RegistroController, ForgotPasswordController, ResetPasswordController
 from controllers.movimiento import MovimientosController
 from models.sesion import SesionModel
 from os import environ, path, remove
@@ -144,6 +144,7 @@ def recuperar_password(token):
 api.add_resource(RegistroController, "/registro")
 api.add_resource(MovimientosController, "/movimientos")
 api.add_resource(ForgotPasswordController, "/olvide-password")
+api.add_resource(ResetPasswordController, "/reset-password")
 
 if __name__ == '__main__':
     app.run(debug=True)
