@@ -120,7 +120,10 @@ def inicio():
 
 @app.route("/recuperarPassword/<string:token>")
 def recuperar_password(token):
-    print(token)
+    token_usada = base_de_datos.session.query(BlackListModel).filter_by(
+        blackListToken=token).first()
+    if token_usada:
+        return render_template('bad_token.jinja')
     fernet = Fernet(environ.get("FERNET_SECRET"))
     # decrypt(b'token')
     # el metodo decrypt recibe una token pero en formato de bytes y luego si es que cumple con la contraseña devolvera el mensaje encriptado pero en bytes, y para convertirlo a string usarmos el metodo decode
