@@ -2,7 +2,7 @@ from flask import Flask, request, send_file, render_template
 from flask_restful import Api
 from controllers.usuario import RegistroController, ForgotPasswordController, ResetPasswordController
 from controllers.movimiento import MovimientosController
-from models.sesion import SesionModel
+from models.black_list import BlackListModel
 from os import environ, path, remove
 from dotenv import load_dotenv
 from config.conexion_bd import base_de_datos

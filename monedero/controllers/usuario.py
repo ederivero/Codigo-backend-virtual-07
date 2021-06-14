@@ -1,5 +1,6 @@
 from flask_restful import Resource, reqparse, request
 from models.usuario import UsuarioModel
+from models.black_list import BlackListModel
 from re import search, fullmatch
 from sqlalchemy.exc import IntegrityError
 from cryptography.fernet import Fernet
@@ -176,22 +177,39 @@ class ResetPasswordController(Resource):
         help='Falta el new_password',
         location='json'
     )
+    serializer.add_argument(
+        'token',
+        type=str,
+        required=True,
+        help='Falta la token',
+        location='json'
+    )
 
     def post(self):
         data = self.serializer.parse_args()
+        token_usada = base_de_datos.session.query(BlackListModel).filter_by(
+            blackListToken=data['token']).first()
+        print(token_usada)
+        if token_usada is not None:
+            return {
+                "success": False,
+                "content": None,
+                "message": "La token ya fue utilizada"
+            }, 400
         if search(PATRON_CORREO, data['correo']):
             usuario = base_de_datos.session.query(UsuarioModel).filter_by(
                 usuarioCorreo=data['correo']).first()
             if usuario:
                 if fullmatch(PATRON_PASSWORD, data['new_password']):
-                    print(usuario.usuarioPassword)
                     passwordBytes = bytes(data['new_password'], "utf-8")
                     passwordHash = bcrypt.hashpw(
                         passwordBytes, bcrypt.gensalt())
                     passwordString = passwordHash.decode("utf-8")
                     usuario.usuarioPassword = passwordString
                     usuario.save()
-                    print(usuario.usuarioPassword)
+                    lista_negra = BlackListModel(
+                        data['token'], usuario.usuarioId)
+                    lista_negra.save()
                     return {
                         "success": True,
                         "content": usuario.json(),

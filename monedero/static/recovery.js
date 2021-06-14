@@ -5,13 +5,15 @@ const correo = document.getElementById("correo");
 btn_enviar.addEventListener("click", async (evento) => {
   evento.preventDefault();
   console.log("me hizo click");
+  const token = location.pathname.split("/")[2];
   const cuerpo = {
     correo: correo.innerText,
     new_password: password.value,
+    token,
   };
 
   console.log(cuerpo);
-  const response = await fetch("http://127.0.0.1:5000/reset-password", {
+  fetch("http://127.0.0.1:5000/reset-password", {
     method: "POST",
     body: JSON.stringify(cuerpo),
     headers: {
