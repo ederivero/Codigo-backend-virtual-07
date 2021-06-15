@@ -1,0 +1,4 @@
+django-admin startproject <project_name> => crea un proyecto con ese nombre
+python manage.py runserver => levanta el servidor
+python manage.py showmigrations => lista todas las migraciones que hay en el proyecto y las que han sido efectuadas estaran marcadas con una X
+python manage.py migrate => efectua todas las migraciones que aun no se han realizado en la bd
