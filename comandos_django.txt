@@ -5,3 +5,4 @@ python manage.py showmigrations => lista todas las migraciones que hay en el pro
 python manage.py migrate => efectua todas las migraciones que aun no se han realizado en la bd
 python manage.py startapp libreria => crea una aplicacion para que podamos crear modelos, vistas, rutas, entre otros
 python manage.py makemigrations <nombre_app> => registra los cambios realizados en los models para que puedan ser ejecutados en la bd
+python manage.py createsuperuser => crea un super usuario que se registrara en la tabla auth_user y servira para poder acceder al panel administrativo
