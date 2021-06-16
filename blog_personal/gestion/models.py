@@ -102,6 +102,9 @@ class LibroModel(models.Model):
         default=0,
     )
 
+    def __str__(self):
+        return self.libroNombre
+
     class Meta:
         db_table = 'libros'
         # La fiesta del chivo       | 2015  |   MVLL     ✅
