@@ -1,0 +1,8 @@
+\l => lista todas las bases de datos del servidor
+\c <nombre_bd> => cambia a esa bd
+\dt => lista todas las tablas de esa bd
+\d <nombre_tabla> => toda la especificacion de esa tabla 
+SELECT (); => mostrara la version instalada de PostgreSQL
+\g => repite la anterior consulta ejecutada
+\e => abre un block de notas con la consulta previa ejecutada
+\? => abre la lista de todos los comandos disponibles

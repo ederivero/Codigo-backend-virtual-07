@@ -45,6 +45,9 @@ class UsuarioModel(models.Model):
         help_text='Ingrese un dni valido'
     )
 
+    def __str__(self):
+        return self.usuarioNombre+' '+self.usuarioApellido
+
     class Meta:
         # permite pasar metadatos al padre desde el hijo (setear atributos)
         # modifica el ordenamiento de mis registros de los usuarios
