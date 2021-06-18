@@ -114,6 +114,12 @@ class LibroController(RetrieveUpdateDestroyAPIView):
 def busqueda_libros(request: Request):
     print(request.query_params)
     nombre = request.query_params.get('nombre')
+    # nombre = nombre del libro
+    # autor = autor de los libros
+    # 1. ver que parametros me manda el front
+    # ambos parametros son opcionales (si no me manda nada retornare todos los libros)
+    # hacer la busqueda dependiendo de los parametros
+
     # https://docs.djangoproject.com/en/3.2/ref/models/querysets/#field-lookups
     # SELECT * FROM LIBROS WHERE LIBRONOMBRE LIKE '%'+nombre+'%'
     resultado = LibroModel.objects.filter(
