@@ -114,6 +114,7 @@ class LibroController(RetrieveUpdateDestroyAPIView):
 def busqueda_libros(request: Request):
     print(request.query_params)
     nombre = request.query_params.get('nombre')
+    autor = request.query_params.get('autor')
     # nombre = nombre del libro
     # autor = autor de los libros
     # 1. ver que parametros me manda el front
@@ -122,8 +123,22 @@ def busqueda_libros(request: Request):
 
     # https://docs.djangoproject.com/en/3.2/ref/models/querysets/#field-lookups
     # SELECT * FROM LIBROS WHERE LIBRONOMBRE LIKE '%'+nombre+'%'
+    # Metodo corto
     resultado = LibroModel.objects.filter(
-        libroNombre__contains=nombre).order_by('libroNombre').all()
+        libroNombre__contains=nombre if nombre else '',
+        libroAutor__contains=autor if autor else '').order_by('libroNombre').all()
+    # Metodo largo
+    # if nombre and autor:
+    #     resultado = LibroModel.objects.filter(
+    #         libroNombre__contains=nombre, libroAutor__contains=autor).order_by('libroNombre').all()
+    # elif nombre:
+    #     resultado = LibroModel.objects.filter(
+    #         libroNombre__contains=nombre).order_by('libroNombre').all()
+    # elif autor:
+    #     resultado = LibroModel.objects.filter(
+    #         libroAutor__contains=autor).order_by('libroNombre').all()
+    # else:
+    #     resultado = LibroModel.objects.filter().order_by('libroNombre').all()
     resultadoSerializado = LibroSerializer(instance=resultado, many=True)
     print(resultado)
     return Response(data={
