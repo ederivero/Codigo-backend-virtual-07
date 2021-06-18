@@ -1,12 +1,15 @@
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.response import Response
 from rest_framework.request import Request
+from django.utils.timezone import now
 from rest_framework import status
+from rest_framework.decorators import api_view
 from .models import LibroModel
 from .serializers import LibroSerializer
 
-
 # crear y listar todos los libros
+
+
 class LibrosController(ListCreateAPIView):
     # todas las clases genericas necesitan un queryset y un serializer_class
     # queryset = es la consultar que hara a la bd cuando se llame a esta clase en un determinado metodo
@@ -55,10 +58,10 @@ class LibroController(RetrieveUpdateDestroyAPIView):
     queryset = LibroModel.objects.all()
     serializer_class = LibroSerializer
 
-    def get(self, request: Request, pk):
-        libro = LibroModel.objects.filter(libroId=pk).first()
+    def get(self, request: Request, id):
+        libro = LibroModel.objects.filter(libroId=id).first()
         pruebaLibro = LibroModel.objects.values(
-            'libroId', 'libroNombre', 'libroEdicion', 'libroAutor', 'libroCantidad').filter(libroId=pk).first()
+            'libroId', 'libroNombre', 'libroEdicion', 'libroAutor', 'libroCantidad').filter(libroId=id).first()
         print(pruebaLibro)
         if libro is not None:
             libroSerializado = self.serializer_class(instance=libro)
@@ -74,8 +77,8 @@ class LibroController(RetrieveUpdateDestroyAPIView):
                 "success": False
             }, status=status.HTTP_404_NOT_FOUND)
 
-    def put(self, request: Request, pk):
-        libro = LibroModel.objects.filter(libroId=pk).first()
+    def put(self, request: Request, id):
+        libro = LibroModel.objects.filter(libroId=id).first()
         if libro:
             data = self.serializer_class(data=request.data)
             # initial_data => retorna todos los campos que hace match con el modelo PERO no valida las funciones de unique_together ni los indices ni los campos unique
@@ -91,3 +94,34 @@ class LibroController(RetrieveUpdateDestroyAPIView):
                 "content": None,
                 "success": False
             }, status=status.HTTP_404_NOT_FOUND)
+
+    def delete(self, request: Request, id):
+        # se actualize el campo deleted_at del libro
+        libro: LibroModel = LibroModel.objects.filter(pk=id).first()
+        libro.deletedAt = now()
+        libro.save()
+        # el metodo delete de la instancia elimina el registro de la bd y retornara, el total de registros eliminados
+        # libro.delete()
+        data = self.serializer_class(instance=libro)
+        return Response(data={
+            "success": True,
+            "content": data.data,
+            "message": "Se inhabilito el libro exitosamente"
+        })
+
+
+@api_view(http_method_names=['GET'])
+def busqueda_libros(request: Request):
+    print(request.query_params)
+    nombre = request.query_params.get('nombre')
+    # https://docs.djangoproject.com/en/3.2/ref/models/querysets/#field-lookups
+    # SELECT * FROM LIBROS WHERE LIBRONOMBRE LIKE '%'+nombre+'%'
+    resultado = LibroModel.objects.filter(
+        libroNombre__contains=nombre).order_by('libroNombre').all()
+    resultadoSerializado = LibroSerializer(instance=resultado, many=True)
+    print(resultado)
+    return Response(data={
+        "success": True,
+        "content": resultadoSerializado.data,
+        "message": None
+    })
