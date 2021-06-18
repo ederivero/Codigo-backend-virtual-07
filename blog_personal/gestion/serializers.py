@@ -7,7 +7,8 @@ class LibroSerializer(serializers.ModelSerializer):
         # model => definir en que modelo se basara para la serializacion
         model = LibroModel
         # fields => indica que campos seran necesarios para el funcionamiento de este serializer
-        fields = '__all__'
+        # fields = '__all__'
+        exclude = ['deletedAt']
         # fields => si queremos usar la minoria de columnas se declarara en una lista o tupla
         # fields = ['col1'] | fields = ('col1',)
         # exclude => excluira la o las columnas definidas

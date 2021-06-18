@@ -111,13 +111,16 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'es'
 
-TIME_ZONE = 'UTC'
+# https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+TIME_ZONE = 'America/Lima'
 
 USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+# evitara el uso de la zona horaria, y usara la hora del servidor
+# https://docs.djangoproject.com/en/3.2/topics/i18n/timezones/
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)

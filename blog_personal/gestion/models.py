@@ -105,6 +105,19 @@ class LibroModel(models.Model):
         default=0,
     )
 
+    # la fecha y hora actual cuando se cree el registro
+    createdAt = models.DateTimeField(
+        auto_now_add=True,
+        db_column='created_at',
+        null=False
+    )
+    # auto_now => hace que el valor de la columna tome la hora actual cada vez que se modifique un registro en la bd
+    updatedAt = models.DateTimeField(
+        auto_now=True,
+        db_column='updated_at'
+    )
+    deletedAt = models.DateTimeField(db_column='deleted_at', null=True)
+
     def __str__(self):
         return self.libroNombre
 
