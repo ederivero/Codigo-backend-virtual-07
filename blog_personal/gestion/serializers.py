@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import LibroModel
+from .models import LibroModel, UsuarioModel
 from django.utils.timezone import now
 
 
@@ -52,3 +52,9 @@ class BusquedaLibroSerializer(serializers.Serializer):
             return data
         raise serializers.ValidationError(
             detail='Inicio debe de ser menor que fin')
+
+
+class UsuarioSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UsuarioModel
+        fields = '__all__'
