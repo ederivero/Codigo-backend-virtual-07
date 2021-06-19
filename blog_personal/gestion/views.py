@@ -5,7 +5,7 @@ from django.utils.timezone import now
 from rest_framework import status
 from rest_framework.decorators import api_view
 from .models import LibroModel
-from .serializers import LibroSerializer
+from .serializers import LibroSerializer, BusquedaLibroSerializer
 
 # crear y listar todos los libros
 
@@ -146,3 +146,37 @@ def busqueda_libros(request: Request):
         "content": resultadoSerializado.data,
         "message": None
     })
+
+# Exponer el endpoint cuya finalidad sea dependiendo de un rango de fechas mostrar todos los libros cuya edicion se realizaron en esas fechas
+
+
+@api_view(http_method_names=['GET', 'POST'])
+def buscador_edicion(request: Request):
+    if request.method == 'POST':
+        print('aca va el post')
+        return Response(data={
+            "success": False,
+            "content": None,
+            "message": "Metodo incorrecto!"
+        }, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+    elif request.method == 'GET':
+
+        param_serializados = BusquedaLibroSerializer(data=request.query_params)
+        param_serializados.initial_data
+        if param_serializados.is_valid():
+            print(param_serializados.validated_data)
+            libros = LibroModel.objects.filter(libroEdicion__range=(
+                param_serializados.validated_data.get('inicio'), param_serializados.validated_data.get('fin')))
+            librosSerializados = LibroSerializer(instance=libros, many=True)
+            return Response(data={
+                "success": True,
+                "message": None,
+                "content": librosSerializados.data
+            })
+        else:
+            print(param_serializados.errors)
+            return Response(data={
+                "success": False,
+                "message": param_serializados.errors,
+                "content": None
+            })
