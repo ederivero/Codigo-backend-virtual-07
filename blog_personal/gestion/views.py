@@ -223,6 +223,7 @@ class PrestamosController(CreateAPIView):
     def post(self, request: Request):
         data = request.data
         nuevoPrestamo = PrestamoSerializer(data=data)
+        # nuevoPrestamo.validacion()
         if nuevoPrestamo.is_valid():
             respuesta = nuevoPrestamo.save()
             print(type(respuesta))
