@@ -1,5 +1,4 @@
-from django.db import Error
-from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework.generics import CreateAPIView, ListCreateAPIView, RetrieveAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.response import Response
 from rest_framework.request import Request
 from django.utils.timezone import now
@@ -217,7 +216,7 @@ class UsuariosController(ListCreateAPIView):
     pagination_class = PaginacionPersonalizada
 
 
-class PrestamosController(ListCreateAPIView):
+class PrestamosController(CreateAPIView):
     queryset = PrestamoModel.objects.all()
     serializer_class = PrestamoSerializer
 
@@ -225,8 +224,9 @@ class PrestamosController(ListCreateAPIView):
         data = request.data
         nuevoPrestamo = PrestamoSerializer(data=data)
         if nuevoPrestamo.is_valid():
-            if nuevoPrestamo.save() is PrestamoModel:
-
+            respuesta = nuevoPrestamo.save()
+            print(type(respuesta))
+            if type(respuesta) is PrestamoModel:
                 # una vez realizado el prestamo, ahora tener que disminuir la cantidad de ese libro.
                 return Response(data={
                     "success": True,
@@ -236,6 +236,14 @@ class PrestamosController(ListCreateAPIView):
 
         return Response(data={
             "success": False,
-            "content": nuevoPrestamo.errors or nuevoPrestamo.save().args,
+            "content": nuevoPrestamo.errors or respuesta if type(respuesta) is str else respuesta.args,
             "message": "Error al crear el prestamo"
         }, status=status.HTTP_400_BAD_REQUEST)
+
+
+class PrestamoController(RetrieveAPIView):
+    queryset = PrestamoModel.objects.all()
+    serializer_class = PrestamoSerializer
+
+    def get(self, request, id):
+        pass

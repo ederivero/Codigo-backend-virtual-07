@@ -63,12 +63,27 @@ class UsuarioSerializer(serializers.ModelSerializer):
 
 
 class PrestamoSerializer(serializers.ModelSerializer):
+    # def validate(self, data):
+    # mover las siguientes validaciones al metodo validate
+    # validar si el usuario no tiene un prestamo activo
+    # validar si el libro no fue inhabilitado (deleteAt)
+    # no usar el self.validated_data sino el self.initial_data pero el initial_data no hace la busqueda del libro ni del usuario
+    # return data
 
+    # def validacion(self):
+    #     pass
     def save(self):
         if self.validated_data.get('libro').libroCantidad > 0:
-            # restamos la cantidad de los libros en una unidad
             # creamos una transaccion
             # https://docs.djangoproject.com/en/3.2/topics/db/transactions/
+            prestamoActivo = PrestamoModel.objects.filter(usuario=self.validated_data.get(
+                'usuario').usuarioId, prestamoEstado=True).first()
+            if prestamoActivo:
+                return "El usuario tiene un prestamo activo"
+            libro = LibroModel.objects.filter(
+                libroId=self.validated_data.get('libro').libroId).first()
+            if libro.deletedAt:
+                return "El libro no esta disponible"
             try:
                 with transaction.atomic():
                     self.validated_data.get('libro').libroCantidad = self.validated_data.get(
@@ -78,7 +93,7 @@ class PrestamoSerializer(serializers.ModelSerializer):
                     # creamos la nueva instancia de Prestamo model con todos sus parametros
                     nuevoPrestamo = PrestamoModel(
                         prestamoFechaInicio=self.validated_data.get(
-                            'prestamoFechaInicio'),
+                            'prestamoFechaInicio', date.today()),
                         prestamoFechaFin=self.validated_data.get(
                             'prestamoFechaFin'),
                         prestamoEstado=self.validated_data.get(
@@ -95,8 +110,7 @@ class PrestamoSerializer(serializers.ModelSerializer):
                 return error
         else:
             # lanzaremos un error de validacion cuando no exista el libro O el usuario
-            raise serializers.ValidationError(
-                detail='El libro o el usuario no existe')
+            return 'El libro no tiene suficientes unidades'
 
     class Meta:
         model = PrestamoModel
