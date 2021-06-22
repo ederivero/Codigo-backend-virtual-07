@@ -1,6 +1,8 @@
+from datetime import date
 from rest_framework import serializers
-from .models import LibroModel, UsuarioModel
+from .models import LibroModel, PrestamoModel, UsuarioModel
 from django.utils.timezone import now
+from django.db import transaction, Error
 
 
 class LibroSerializer(serializers.ModelSerializer):
@@ -57,4 +59,45 @@ class BusquedaLibroSerializer(serializers.Serializer):
 class UsuarioSerializer(serializers.ModelSerializer):
     class Meta:
         model = UsuarioModel
+        fields = '__all__'
+
+
+class PrestamoSerializer(serializers.ModelSerializer):
+
+    def save(self):
+        if self.validated_data.get('libro').libroCantidad > 0:
+            # restamos la cantidad de los libros en una unidad
+            # creamos una transaccion
+            # https://docs.djangoproject.com/en/3.2/topics/db/transactions/
+            try:
+                with transaction.atomic():
+                    self.validated_data.get('libro').libroCantidad = self.validated_data.get(
+                        'libro').libroCantidad - 1
+                    # guardamos esa modificacion del libro en la bd
+                    self.validated_data.get('libro').save()
+                    # creamos la nueva instancia de Prestamo model con todos sus parametros
+                    nuevoPrestamo = PrestamoModel(
+                        prestamoFechaInicio=self.validated_data.get(
+                            'prestamoFechaInicio'),
+                        prestamoFechaFin=self.validated_data.get(
+                            'prestamoFechaFin'),
+                        prestamoEstado=self.validated_data.get(
+                            'prestamoEstado', True),
+                        usuario=self.validated_data.get('usuario'),
+                        libro=self.validated_data.get('libro'),
+                    )
+                    # guardamos esa instancia en la base de datos generando un nuevo prestamo
+                    nuevoPrestamo.save()
+                    # retornamos el nuevo prestamo creado
+                    return nuevoPrestamo
+            except Error as error:
+                print(error)
+                return error
+        else:
+            # lanzaremos un error de validacion cuando no exista el libro O el usuario
+            raise serializers.ValidationError(
+                detail='El libro o el usuario no existe')
+
+    class Meta:
+        model = PrestamoModel
         fields = '__all__'
