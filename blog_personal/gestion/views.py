@@ -237,7 +237,7 @@ class PrestamosController(CreateAPIView):
 
         return Response(data={
             "success": False,
-            "content": nuevoPrestamo.errors or respuesta if type(respuesta) is str else respuesta.args,
+            "content": nuevoPrestamo.errors or (respuesta if type(respuesta) is str else respuesta.args),
             "message": "Error al crear el prestamo"
         }, status=status.HTTP_400_BAD_REQUEST)
 

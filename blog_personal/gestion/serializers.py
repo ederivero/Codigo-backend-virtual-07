@@ -72,18 +72,23 @@ class PrestamoSerializer(serializers.ModelSerializer):
 
     # def validacion(self):
     #     pass
+    def validate(self, data):
+        prestamoActivo = PrestamoModel.objects.filter(
+            usuario=self.initial_data.get('usuario'),
+            prestamoEstado=True
+        ).first()
+        if prestamoActivo:
+            raise serializers.ValidationError(
+                {'usuario': "El usuario tiene un prestamo activo"})
+        libro = LibroModel.objects.filter(
+            libroId=self.initial_data.get('libro')).first()
+        if libro.deletedAt:
+            raise serializers.ValidationError(
+                {'prestamo': "El libro no esta disponible"})
+        return data
+
     def save(self):
         if self.validated_data.get('libro').libroCantidad > 0:
-            # creamos una transaccion
-            # https://docs.djangoproject.com/en/3.2/topics/db/transactions/
-            prestamoActivo = PrestamoModel.objects.filter(usuario=self.validated_data.get(
-                'usuario').usuarioId, prestamoEstado=True).first()
-            if prestamoActivo:
-                return "El usuario tiene un prestamo activo"
-            libro = LibroModel.objects.filter(
-                libroId=self.validated_data.get('libro').libroId).first()
-            if libro.deletedAt:
-                return "El libro no esta disponible"
             try:
                 with transaction.atomic():
                     self.validated_data.get('libro').libroCantidad = self.validated_data.get(
