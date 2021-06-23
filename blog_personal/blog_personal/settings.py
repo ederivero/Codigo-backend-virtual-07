@@ -132,3 +132,6 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# STATIC_ROOT => cuando nosotros deseemos generar los archivos estaticos (CSS, JS, HTML) propios de DRF y Django se almacenaran en la direccion que pongamos
+STATIC_ROOT = BASE_DIR / 'assets/'
