@@ -120,3 +120,30 @@ class PrestamoSerializer(serializers.ModelSerializer):
     class Meta:
         model = PrestamoModel
         fields = '__all__'
+
+
+class PrestamoNestedSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PrestamoModel
+        fields = '__all__'
+        # con el atributo depth indicare cuantos niveles quiere ingresar a partir del actual
+        depth = 1
+
+
+class PrestamoUsuarioSerializer(serializers.ModelSerializer):
+    usuario = UsuarioSerializer()
+    x = UsuarioSerializer(source="usuario")
+
+    class Meta:
+        model = PrestamoModel
+        fields = '__all__'
+
+
+class UsuarioPrestamoSerializer(serializers.ModelSerializer):
+    usuarioPrestamos = PrestamoNestedSerializer(many=True)
+
+    prestamos = PrestamoSerializer(source="usuarioPrestamos", many=True)
+
+    class Meta:
+        model = UsuarioModel
+        fields = '__all__'
