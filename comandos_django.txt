@@ -8,3 +8,4 @@ python manage.py makemigrations <nombre_app> => registra los cambios realizados 
 python manage.py createsuperuser => crea un super usuario que se registrara en la tabla auth_user y servira para poder acceder al panel administrativo
 python manage.py sqlmigrate <nombre_app> <num_migracion> => nos da el codigo SQL que se ejecutara en la base de datos a partir de la migracion
 python manage.py shell => crea una terminal para trabajar con python Pero usando todas las funcionalidades de Django
+python manage.py collectstatic => genera todos los archivos CSS, JS y HTML que se utilizan de manera interna en el proyecto (DRF, DJANGO)
