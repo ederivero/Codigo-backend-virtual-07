@@ -37,6 +37,11 @@ class PlatoModel(models.Model):
         # permitira que el campo sea opcional PERO si es que no es proveido un valor pondra el valor definido en el default
     )
 
+    updateAt = models.DateTimeField(
+        auto_now=True,
+        db_column='updated_at'
+    )
+
     class Meta:
         db_table = 'platos'
         ordering = ['platoNombre']
@@ -63,24 +68,28 @@ class UsuarioModel(AbstractBaseUser, PermissionsMixin):
     usuarioNombre = models.CharField(
         max_length=20,
         null=False,
-        db_column='nombre'
+        db_column='nombre',
+        verbose_name='Nombre del usuario'
     )
 
     usuarioApellido = models.CharField(
         max_length=20,
         null=False,
-        db_column='apellido'
+        db_column='apellido',
+        verbose_name='Apellido del usuario'
     )
 
     usuarioCorreo = models.EmailField(
         db_column='correo',
         null=False,
         unique=True,
+        verbose_name='Correo del usuario'
     )
 
     usuarioTipo = models.IntegerField(
         choices=TIPO_PERSONAL,
-        db_column='tipo'
+        db_column='tipo',
+        verbose_name='Tipo del usuario'
     )
 
     usuarioTelefono = models.CharField(
@@ -91,6 +100,11 @@ class UsuarioModel(AbstractBaseUser, PermissionsMixin):
 
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
+
+    updateAt = models.DateTimeField(
+        auto_now=True,
+        db_column='updated_at'
+    )
 
     # comportamiento del modelo al momento de realizar la creacion del superuser x consola
     objects = UsuarioManager()
@@ -121,6 +135,11 @@ class MesaModel(models.Model):
     mesaCapacidad = models.IntegerField(
         db_column='capacidad',
         null=False,
+    )
+
+    updateAt = models.DateTimeField(
+        auto_now=True,
+        db_column='updated_at'
     )
 
     class Meta:
