@@ -9,3 +9,5 @@ python manage.py createsuperuser => crea un super usuario que se registrara en l
 python manage.py sqlmigrate <nombre_app> <num_migracion> => nos da el codigo SQL que se ejecutara en la base de datos a partir de la migracion
 python manage.py shell => crea una terminal para trabajar con python Pero usando todas las funcionalidades de Django
 python manage.py collectstatic => genera todos los archivos CSS, JS y HTML que se utilizan de manera interna en el proyecto (DRF, DJANGO)
+python manage.py dbshell => crea una conexion a la bd ya sea postgresql, mysql, mariadb, sqlite, oracle pero necesitamos declarar la herramienta en las variables de entorno
+python manage.py flush => resetea toda la base de datos (borra todos los registros)
