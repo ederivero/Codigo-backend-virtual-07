@@ -136,3 +136,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # cuando nosotros sobre escribimos el modelo de autenticacion (auth_user) debemos de declarlo en el settings
 AUTH_USER_MODEL = "cms.UsuarioModel"
+
+# sirve para mostrar y almacenar los archivos multimedia mediante la URL
+MEDIA_ROOT = BASE_DIR / 'media'
