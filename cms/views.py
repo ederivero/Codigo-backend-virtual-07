@@ -8,6 +8,8 @@ from rest_framework.generics import (
     RetrieveUpdateDestroyAPIView)
 from .serializers import *
 from rest_framework import status
+from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework.permissions import AllowAny
 import os
 from django.conf import settings
 
@@ -39,16 +41,28 @@ class ArchivosController(CreateAPIView):
 
 
 class EliminarArchivoController(DestroyAPIView):
-    def delete(self, request, nombre):
+    serializer_class = EliminarArchivoSerializer
+
+    def delete(self, request: Request):
         # definir el controlador y la ruta
         # mediante el nombre del archivo intentar eliminarlo , si no se encuentra el archivo retornar un mensaje que ya fue eliminado con un stado 200
+        data = self.serializer_class(data=request.data)
+
         try:
-            os.remove(settings.MEDIA_ROOT / nombre)
-            return Response(data={
-                "success": True,
-                "content": None,
-                "message": "Imagen eliminada exitosamente"
-            })
+            if data.is_valid():
+                os.remove(settings.MEDIA_ROOT /
+                          data.validated_data.get('nombre'))
+                return Response(data={
+                    "success": True,
+                    "content": None,
+                    "message": "Imagen eliminada exitosamente"
+                })
+            else:
+                return Response(data={
+                    "success": False,
+                    "content": data.errors,
+                    "message": "Error al eliminar la imagen"
+                }, status=status.HTTP_400_BAD_REQUEST)
         except:
             return Response(data={
                 "success": False,
@@ -65,3 +79,9 @@ class PlatosController(ListCreateAPIView):
         # para ver que archivos me esta mandando el frontend
         print(request.FILES)
         return Response(data='ok')
+
+
+class CustomPayloadController(TokenObtainPairView):
+    """Sirve para modificar el payload de la token de acceso"""
+    permission_classes = [AllowAny]
+    serializer_class = CustomPayloadSerializer

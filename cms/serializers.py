@@ -3,6 +3,7 @@ from .models import *
 from rest_framework import serializers
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from django.conf import settings
 # from os import path
 
@@ -35,3 +36,16 @@ class ArchivoSerializer(serializers.Serializer):
         # ruta_final = path.join(settings.MEDIA_ROOT, ruta)
         # print(ruta)
         # print(ruta_final)
+
+
+class EliminarArchivoSerializer(serializers.Serializer):
+    nombre = serializers.CharField()
+
+
+class CustomPayloadSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user: UsuarioModel):
+        token = super(CustomPayloadSerializer, cls).get_token(user)
+        token['usuarioTipo'] = user.usuarioTipo
+        token['mensaje'] = 'Holis'
+        return token

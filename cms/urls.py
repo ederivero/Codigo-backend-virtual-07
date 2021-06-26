@@ -6,5 +6,5 @@ from .views import (PlatosController, ArchivosController,
 urlpatterns = [
     path('platos', PlatosController.as_view()),
     path('subirImagen', ArchivosController.as_view()),
-    path('eliminarImagen/<str:nombre>', EliminarArchivoController.as_view()),
+    path('eliminarImagen', EliminarArchivoController.as_view()),
 ]

@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 from pathlib import Path
 from dotenv import load_dotenv
 from os import environ
-
+from datetime import time, timedelta
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv()
@@ -142,3 +142,21 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 # sirve para indicar la ruta para devolver todos los archivos multimedia almacenados en el backend
 MEDIA_URL = '/assets/'
+
+# sirve para definir a DRF algunas configuraciones adicionales como la paginacion, la autenticacion y exepciones
+REST_FRAMEWORK = {
+    # sirve para indicar cual sera la clase encargada de la autenticacion de los metodos REST
+    'DEFAULT_AUTHENTICATION_CLASSES': ['rest_framework_simplejwt.authentication.JWTAuthentication', ]
+}
+
+# sirve para configurar toda la libreria de JWT
+SIMPLE_JWT = {
+    # modifica el tiempo de vida de la access token
+    'ACCESS_TOKEN_LIFETIME': timedelta(hours=1),
+    # modifica el tiempo de vida de la refresh token
+    'REFRESH_TOKEN_LIFETIME': timedelta(hours=5),
+    # modifica la contraseña de la token
+    # 'SIGNING_KEY':'mipassword',
+    # indicar cual es la PK del modelo de autenticacion
+    'USER_ID_FIELD': 'usuarioId'
+}
