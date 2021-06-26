@@ -99,3 +99,24 @@ class MesaSerializer(serializers.ModelSerializer):
     class Meta:
         model = MesaModel
         fields = '__all__'
+
+
+class DetalleSerializer(serializers.Serializer):
+    cantidad = serializers.IntegerField(min_value=1)
+    plato = serializers.IntegerField(min_value=1)
+
+
+class PedidoSerializer(serializers.Serializer):
+    documento_cliente = serializers.CharField(
+        required=False, min_length=8, max_length=11)
+    mesa = serializers.IntegerField(min_value=1)
+    detalle = DetalleSerializer(many=True)
+
+    def validate(self, data):
+        # si hay un documento_cliente Y si es que alguna de la siguientes condiciones es verdadera: si la longitudo del documento es 8 O la longitudo del documento es 11
+        if data.get('documento_cliente') and (len(data.get('documento_cliente')) == 8 or len(data.get('documento_cliente')) == 11):
+            return data
+        if data.get('documento_cliente') is None:
+            return data
+        raise serializers.ValidationError(
+            detail='El documento debe ser 8 u 11 caracteres')

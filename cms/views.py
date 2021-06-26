@@ -12,6 +12,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.permissions import AllowAny
 import os
 from django.conf import settings
+import requests
 
 
 class ArchivosController(CreateAPIView):
@@ -162,3 +163,39 @@ class MesaController(ListAPIView):
     pagination_class = PaginacionMesa
     serializer_class = MesaSerializer
     queryset = MesaModel.objects.all()
+
+
+class PedidoController(CreateAPIView):
+    serializer_class = PedidoSerializer
+
+    def post(self, request: Request):
+        data = self.serializer_class(data=request.data)
+        if data.is_valid():
+            documento_cliente = data.validated_data.get('documento_cliente')
+            if documento_cliente:
+                if len(documento_cliente) == 8:
+                    url = "https://apiperu1.dev/api/dni/{}".format(
+                        documento_cliente)
+
+                elif len(documento_cliente) == 11:
+                    url = "https://apiperu.dev/api/ruc/{}".format(
+                        documento_cliente)
+                headers = {
+                    "Authorization": "Bearer 6287da8da77342f7e4aab59b670dbe153f0e803c2553e7a7dcbcc7d2510ba793",
+                    "Content-Type": "application/json"
+                }
+                try:
+                    respuesta = requests.get(url=url, headers=headers)
+                    print(respuesta.ok)
+                    print(respuesta.json())
+                    print(respuesta.status_code)
+                except:
+                    print('error la api se cayo')
+
+            return Response(data='ok')
+        else:
+            return Response(data={
+                "success": False,
+                "content": data.errors,
+                "message": "Error al crear el pedido"
+            })
