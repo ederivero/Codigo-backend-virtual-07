@@ -1,11 +1,11 @@
-from .models import PlatoModel
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.generics import (
     CreateAPIView,
     DestroyAPIView,
     ListCreateAPIView,
-    RetrieveUpdateDestroyAPIView)
+    ListAPIView)
+from rest_framework.pagination import PageNumberPagination
 from .serializers import *
 from rest_framework import status
 from rest_framework_simplejwt.views import TokenObtainPairView
@@ -76,9 +76,20 @@ class PlatosController(ListCreateAPIView):
     serializer_class = PlatoSerializer
 
     def post(self, request: Request):
-        # para ver que archivos me esta mandando el frontend
-        print(request.FILES)
-        return Response(data='ok')
+        data = self.serializer_class(data=request.data)
+        if data.is_valid():
+            data.save()
+            return Response(data={
+                "success": True,
+                "content": data.data,
+                "message": "Creacion de plato exitosa"
+            }, status=status.HTTP_201_CREATED)
+        else:
+            return Response(data={
+                "success": False,
+                "content": data.errors,
+                "message": "Error al crear el plato"
+            }, status=status.HTTP_400_BAD_REQUEST)
 
 
 class CustomPayloadController(TokenObtainPairView):
@@ -103,3 +114,51 @@ class CustomPayloadController(TokenObtainPairView):
                 "content": data.errors,
                 "message": "error de generacion de la jwt"
             })
+
+
+class RegistroUsuarioController(CreateAPIView):
+    serializer_class = RegistroUsuarioSerializer
+
+    def post(self, request: Request):
+        data = self.serializer_class(data=request.data)
+        if data.is_valid():
+            data.save()
+            return Response({
+                "message": "Usuario Creado exitosamente",
+                "content": data.data,
+                "success": True
+            }, status=status.HTTP_201_CREATED)
+        else:
+            return Response({
+                "message": "Error al crear el usuario",
+                "content": data.errors,
+                "success": False
+            })
+
+
+class PaginacionMesa(PageNumberPagination):
+    page_query_param = "pagina"
+    page_size = 3
+    max_page_size = 5
+    page_size_query_param = "cantidad"
+
+    def get_paginated_response(self, data):
+        return Response(data={
+            "data": {
+                "success": True,
+                "content": data,
+                "message": None
+            },
+            "paginacion": {
+                "pagPrev": self.get_previous_link(),
+                "pagSig": self.get_next_link(),
+                "total": self.page.paginator.count
+            }
+        })
+
+
+class MesaController(ListAPIView):
+    # hacer el metodo de devolucion de las mesas PAGINADO el numero de registro x defecto sea 3 y un maximo de 5 y respetar el formato data: {success, content, message} paginacion: {...}
+    pagination_class = PaginacionMesa
+    serializer_class = MesaSerializer
+    queryset = MesaModel.objects.all()

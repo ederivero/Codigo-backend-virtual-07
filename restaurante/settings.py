@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework_simplejwt',
     'cms',
     'facturacion',
 ]
@@ -112,7 +113,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'es'
 
 TIME_ZONE = 'UTC'
 
@@ -146,7 +147,8 @@ MEDIA_URL = '/assets/'
 # sirve para definir a DRF algunas configuraciones adicionales como la paginacion, la autenticacion y exepciones
 REST_FRAMEWORK = {
     # sirve para indicar cual sera la clase encargada de la autenticacion de los metodos REST
-    'DEFAULT_AUTHENTICATION_CLASSES': ['rest_framework_simplejwt.authentication.JWTAuthentication', ]
+    'DEFAULT_AUTHENTICATION_CLASSES': ['rest_framework_simplejwt.authentication.JWTAuthentication', ],
+    'DEFAULT_PAGINATION_CLASS': 'restaurante.paginacion.PaginacionMesa'
 }
 
 # sirve para configurar toda la libreria de JWT

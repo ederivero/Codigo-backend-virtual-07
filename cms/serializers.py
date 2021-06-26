@@ -9,6 +9,8 @@ from django.conf import settings
 
 
 class PlatoSerializer(serializers.ModelSerializer):
+    platoFoto = serializers.CharField(max_length=100)
+
     class Meta:
         model = PlatoModel
         fields = '__all__'
@@ -50,5 +52,50 @@ class CustomPayloadSerializer(TokenObtainPairSerializer):
         token = super(CustomPayloadSerializer, cls).get_token(user)
         print(token)
         token['usuarioTipo'] = user.usuarioTipo
+        token['user_mail'] = user.usuarioCorreo
         token['mensaje'] = 'Holis'
         return token
+
+
+class RegistroUsuarioSerializer(serializers.ModelSerializer):
+    # forma 1 para modificar algun atributo del model
+    # password = serializers.CharField(write_only=True)
+
+    def save(self):
+        usuarioNombre = self.validated_data.get('usuarioNombre')
+        usuarioApellido = self.validated_data.get('usuarioApellido')
+        usuarioCorreo = self.validated_data.get('usuarioCorreo')
+        usuarioTipo = self.validated_data.get('usuarioTipo')
+        usuarioTelefono = self.validated_data.get('usuarioTelefono')
+        password = self.validated_data.get('password')
+        nuevoUsuario = UsuarioModel(
+            usuarioNombre=usuarioNombre,
+            usuarioCorreo=usuarioCorreo,
+            usuarioApellido=usuarioApellido,
+            usuarioTipo=usuarioTipo,
+            usuarioTelefono=usuarioTelefono
+        )
+        nuevoUsuario.set_password(password)
+        nuevoUsuario.save()
+        return nuevoUsuario
+
+    class Meta:
+        model = UsuarioModel
+        # fields = ['usuarioNombre', 'usuarioApellido']
+        exclude = ['groups', 'user_permissions']
+        # es para dar configuracion adicional a los atributos de un model serializer, usando el atributo extra_kwargs se puede editar la configuracion de si solo escritura, solo lectura, required, allow null, default y error messages
+        # no es necesario volver a declarar las mismas configuraciones iniciales ()
+        extra_kwargs = {
+            'password': {
+                'write_only': True
+            },
+            'usuarioId': {
+                'read_only': True
+            }
+        }
+
+
+class MesaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MesaModel
+        fields = '__all__'
