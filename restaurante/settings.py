@@ -139,3 +139,6 @@ AUTH_USER_MODEL = "cms.UsuarioModel"
 
 # sirve para mostrar y almacenar los archivos multimedia mediante la URL
 MEDIA_ROOT = BASE_DIR / 'media'
+
+# sirve para indicar la ruta para devolver todos los archivos multimedia almacenados en el backend
+MEDIA_URL = '/assets/'

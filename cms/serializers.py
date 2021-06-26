@@ -4,7 +4,7 @@ from rest_framework import serializers
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
 from django.conf import settings
-from os import path
+# from os import path
 
 
 class PlatoSerializer(serializers.ModelSerializer):
@@ -21,16 +21,17 @@ class ArchivoSerializer(serializers.Serializer):
     def save(self):
         archivo: InMemoryUploadedFile = self.validated_data.get('archivo')
         # para ver el tipo de archivo que es
-        print(archivo.content_type)
+        # print(archivo.content_type)
         # para ver el nombre del archivo
-        print(archivo.name)
+        # print(archivo.name)
         # para ver el tamaño del archivo en bytes
-        print(archivo.size)
+        # print(archivo.size)
         # para leer el archivo, una vez que se lee el archivo se elimina su informacion
         # archivo.read()
 
         ruta = default_storage.save(
             archivo.name, ContentFile(archivo.read()))
-        ruta_final = path.join(settings.MEDIA_ROOT, ruta)
-        print(ruta)
-        print(ruta_final)
+        return settings.MEDIA_URL + ruta
+        # ruta_final = path.join(settings.MEDIA_ROOT, ruta)
+        # print(ruta)
+        # print(ruta_final)
