@@ -1,3 +1,4 @@
+import decimal
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.generics import (
@@ -211,30 +212,49 @@ class PedidoController(CreateAPIView):
                                                   mesa=mesa)
 
                         nuevoPedido.save()
-
+                        total_general = 0.00
                         for detalle in detalles:
                             # crear el detalle
+                            plato: PlatoModel = detalle.get('plato')
                             subtotal = int(detalle.get('cantidad')) * \
-                                detalle.get('plato').platoPrecio
+                                plato.platoPrecio
 
                             nuevoDetalle = DetalleModel(
                                 detalleCantidad=detalle.get('cantidad'),
                                 detalleSubTotal=subtotal,
                                 pedido=nuevoPedido,
-                                plato=detalle.get('plato'))
+                                plato=plato)
 
                             nuevoDetalle.save()
+
                             # descontar la cantidad del registro del plato
-                            # agregar la cantidad a la cabecera del pedido
+                            plato.platoCantidad -= int(detalle.get('cantidad'))
+                            # plato.platoCantidad = plato.platoCantidad - int(detalle.get('cantidad'))
+                            plato.save()
+
+                            total_general += float(subtotal)
+
+                        # agregar la cantidad a la cabecera del pedido
+                        nuevoPedido.pedidoTotal += total_general
+                        # nuevoPedido.pedidoTotal =  nuevoPedido.pedidoTotal + float(subtotal)
+                        nuevoPedido.save()
 
                 except Exception as e:
-                    print(e)
-                    print('error la api se cayo')
+                    return Response(data={
+                        "message": 'error al realizar la transaccion',
+                        "success": False,
+                        "content": e.args,
+                    }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-            return Response(data='ok')
+            return Response(data={
+                "success": True,
+                "content": None,
+                "message": "Pedido Generado exitosamente"
+            }, status=status.HTTP_201_CREATED)
+
         else:
             return Response(data={
                 "success": False,
                 "content": data.errors,
                 "message": "Error al crear el pedido"
-            })
+            }, status=status.HTTP_400_BAD_REQUEST)
