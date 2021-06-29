@@ -105,6 +105,21 @@ class DetalleSerializer(serializers.Serializer):
     cantidad = serializers.IntegerField(min_value=1)
     plato = serializers.IntegerField(min_value=1)
 
+    def validate(self, data):
+        # ITERARLO
+        # buscar si existe el plato (hacerlo en el serializer)
+        try:
+            data['plato'] = PlatoModel.objects.get(platoId=data.get('plato'))
+        except:
+            raise serializers.ValidationError(
+                detail='El plato no existe'
+            )
+        if data['plato'].platoCantidad < data.get('cantidad'):
+            raise serializers.ValidationError(
+                detail='La cantidad es mayor que la disponible'
+            )
+        return data
+
 
 class PedidoSerializer(serializers.Serializer):
     documento_cliente = serializers.CharField(
@@ -113,6 +128,25 @@ class PedidoSerializer(serializers.Serializer):
     detalle = DetalleSerializer(many=True)
 
     def validate(self, data):
+        # for detalle_simple in data.get('detalle'):
+        #     try:
+        #         detalle_simple['plato'] = PlatoModel.objects.get(platoId=data.get('plato'))
+        #     except:
+        #         raise serializers.ValidationError(
+        #             detail='El plato no existe'
+        #         )
+        #     if detalle_simple['plato'].platoCantidad < detalle_simple.get('cantidad'):
+        #         raise serializers.ValidationError(
+        #             detail='La cantidad es mayor que la disponible'
+        #         )
+        # validar si la mesa existe en la bd
+        try:
+            data['mesa'] = MesaModel.objects.get(mesaId=data.get('mesa'))
+        except:
+            raise serializers.ValidationError(
+                detail='La mesa no existe'
+            )
+
         # si hay un documento_cliente Y si es que alguna de la siguientes condiciones es verdadera: si la longitudo del documento es 8 O la longitudo del documento es 11
         if data.get('documento_cliente') and (len(data.get('documento_cliente')) == 8 or len(data.get('documento_cliente')) == 11):
             return data

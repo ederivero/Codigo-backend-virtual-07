@@ -9,10 +9,13 @@ from rest_framework.pagination import PageNumberPagination
 from .serializers import *
 from rest_framework import status
 from rest_framework_simplejwt.views import TokenObtainPairView
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 import os
 from django.conf import settings
 import requests
+from dotenv import load_dotenv
+from django.db import transaction
+load_dotenv()
 
 
 class ArchivosController(CreateAPIView):
@@ -37,8 +40,6 @@ class ArchivosController(CreateAPIView):
                 "content": data.errors,
                 "message": "Error al subir el archivo"
             }, status=status.HTTP_400_BAD_REQUEST)
-
-# hacer la eliminacion de un archivo
 
 
 class EliminarArchivoController(DestroyAPIView):
@@ -167,29 +168,67 @@ class MesaController(ListAPIView):
 
 class PedidoController(CreateAPIView):
     serializer_class = PedidoSerializer
+    # permision_classes => sirve para declarar las opciones de autorizacion que seran requeridas al consultar las rutas de este controlador
+    permission_classes = [IsAuthenticated]
 
     def post(self, request: Request):
         data = self.serializer_class(data=request.data)
+        print(request.user)
+        # request.auth => mostrara la token que se esta enviando al controlador en el apartado de headers> Authorization
+        # request.user => retornara la instancia de usuario si es que existe, caso contrario retornara None
         if data.is_valid():
             documento_cliente = data.validated_data.get('documento_cliente')
+            detalles = data.validated_data.get('detalle')
+            mesa = data.validated_data.get('mesa')
             if documento_cliente:
                 if len(documento_cliente) == 8:
-                    url = "https://apiperu1.dev/api/dni/{}".format(
+                    url = "https://apiperu.dev/api/dni/{}".format(
                         documento_cliente)
 
                 elif len(documento_cliente) == 11:
                     url = "https://apiperu.dev/api/ruc/{}".format(
                         documento_cliente)
                 headers = {
-                    "Authorization": "Bearer 6287da8da77342f7e4aab59b670dbe153f0e803c2553e7a7dcbcc7d2510ba793",
+                    "Authorization": "Bearer " + os.environ.get('API_PERU', ''),
                     "Content-Type": "application/json"
                 }
                 try:
                     respuesta = requests.get(url=url, headers=headers)
-                    print(respuesta.ok)
+                    json = respuesta.json()
+                    # print(respuesta.ok)
                     print(respuesta.json())
-                    print(respuesta.status_code)
-                except:
+                    # print(respuesta.status_code)
+
+                    if(json.get('success') == False):
+                        return Response(data='usuario incorrecto')
+
+                    with transaction.atomic():
+                        # colocar el nombre completo del cliente tanto como si fuese DNI o RUC
+                        dataJson = json.get('data')
+                        nuevoPedido = PedidoModel(pedidoTotal=0.0, pedidoNombreCliente=dataJson.get('nombre_completo') if dataJson.get('nombre_completo') else dataJson.get('nombre_o_razon_social'),
+                                                  pedidoDocumentoCliente=documento_cliente,
+                                                  usuario=request.user,
+                                                  mesa=mesa)
+
+                        nuevoPedido.save()
+
+                        for detalle in detalles:
+                            # crear el detalle
+                            subtotal = int(detalle.get('cantidad')) * \
+                                detalle.get('plato').platoPrecio
+
+                            nuevoDetalle = DetalleModel(
+                                detalleCantidad=detalle.get('cantidad'),
+                                detalleSubTotal=subtotal,
+                                pedido=nuevoPedido,
+                                plato=detalle.get('plato'))
+
+                            nuevoDetalle.save()
+                            # descontar la cantidad del registro del plato
+                            # agregar la cantidad a la cabecera del pedido
+
+                except Exception as e:
+                    print(e)
                     print('error la api se cayo')
 
             return Response(data='ok')
