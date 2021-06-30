@@ -1,3 +1,4 @@
+from facturacion.models import ComprobanteModel
 from rest_framework import serializers
 from cms.models import PedidoModel
 
@@ -14,3 +15,9 @@ class ComprobanteSerializer(serializers.Serializer):
             return data
         except:
             raise serializers.ValidationError(detail='El pedido no existe')
+
+
+class ComprobanteModelSerializer(serializers.ModelSerializer):
+    class Meta:
+        fields = '__all__'
+        model = ComprobanteModel

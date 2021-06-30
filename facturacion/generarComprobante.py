@@ -71,7 +71,7 @@ def crearComprobante(tipo_comprobante: int, pedido: PedidoModel, observaciones: 
         numero = 1
     else:
         numero = ultimoComprobante.comprobanteNumero + 1
-    print(fecha_de_emision.strftime("%d-%m-%Y"))
+
     total_gravada = total / 1.18
     comprobante = {
         "operacion": "generar_comprobante",
@@ -102,4 +102,21 @@ def crearComprobante(tipo_comprobante: int, pedido: PedidoModel, observaciones: 
     respuesta = requests.post(environ.get(
         'URL_NUBEFACT'), json=comprobante, headers=headers_nubefact)
 
-    print(respuesta.json())
+    # print(respuesta.json())
+    # almacenar ese comprobante en la tabla comprobanteModel
+    rpta_json = respuesta.json()
+    if rpta_json.get('errors'):
+        return rpta_json
+
+    nuevoComprobante = ComprobanteModel(
+        comprobanteSerie=serie,
+        comprobanteNumero=numero,
+        comprobanteTipo=tipo_comprobante,
+        comprobantePDF=rpta_json.get('enlace_del_pdf'),
+        comprobanteCDR=rpta_json.get('enlace_del_cdr'),
+        comprobanteXML=rpta_json.get('enlace_del_xml'),
+        comprobanteDocCliente=documento,
+        pedido=pedido
+    )
+    nuevoComprobante.save()
+    return nuevoComprobante
