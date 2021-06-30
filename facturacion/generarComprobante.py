@@ -6,15 +6,15 @@ from os import environ
 load_dotenv()
 
 
-def crearComprobante(tipo_comprobante, pedidoId, observaciones):
+def crearComprobante(tipo_comprobante: int, pedido: PedidoModel, observaciones: str):
     # sunat_transaction => sirve para indicar que tipo de transaccion se va a realizar, generalmente es 1
     # moneda => 1. SOLES | 2. DOLARES | 3. EUROS
     # formato_de_pdf => el formato en el cual se generara la venta (A4, A5, TICKET)
 
     # validar el tipo con el documentoCliente
-    pedido: PedidoModel = PedidoModel.objects.filter(pedidoId=pedidoId)
-    if pedido is None:
-        raise Exception('No se encontro el pedido')
+    # pedido: PedidoModel = PedidoModel.objects.filter(pedidoId=pedidoId).first()
+    # if pedido is None:
+    #     raise Exception('No se encontro el pedido')
 
     cliente_denominacion = pedido.pedidoNombreCliente
     documento = pedido.pedidoDocumentoCliente
@@ -31,9 +31,9 @@ def crearComprobante(tipo_comprobante, pedidoId, observaciones):
         cantidad = detalle.detalleCantidad
         # valor_unitario => sin IGV
         # quitar igv del prodcuto = precio / 1.18
-        valor_unitario = detalle.plato.platoPrecio / 1.18
+        valor_unitario = float(detalle.plato.platoPrecio) / 1.18
         # precio_unitario => con IGV
-        precio_unitario = detalle.plato.platoPrecio
+        precio_unitario = float(detalle.plato.platoPrecio)
         subtotal = valor_unitario * cantidad
         tipo_de_igv = 1
         # esto es el IGV pero del item
@@ -71,10 +71,11 @@ def crearComprobante(tipo_comprobante, pedidoId, observaciones):
         numero = 1
     else:
         numero = ultimoComprobante.comprobanteNumero + 1
-
+    print(fecha_de_emision.strftime("%d-%m-%Y"))
+    total_gravada = total / 1.18
     comprobante = {
         "operacion": "generar_comprobante",
-        "tipo_comprobante": tipo_comprobante,
+        "tipo_de_comprobante": tipo_comprobante,
         "serie": serie,
         "numero": numero,
         "sunat_transaction": 1,
@@ -82,13 +83,15 @@ def crearComprobante(tipo_comprobante, pedidoId, observaciones):
         "cliente_numero_de_documento": documento,
         "cliente_denominacion": cliente_denominacion,
         "cliente_email": "ederiveroman@gmail.com",
-        "fecha_emision": fecha_de_emision,
+        "fecha_de_emision": fecha_de_emision.strftime("%d-%m-%Y"),
         "moneda": 1,
         "porcentaje_de_igv": 18.00,
         "total": total,
         "observaciones": observaciones,
         "enviar_automaticamente_a_la_sunat": True,
         "enviar_automaticamente_al_cliente": True,
+        "total_igv": total - total_gravada,
+        "total_gravada": total_gravada,
         "items": items
     }
 
