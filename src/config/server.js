@@ -1,10 +1,12 @@
 import express from "express";
 import { tareas_router } from "../routes/tareas";
+import { json } from "body-parser";
 
 export class Server {
   constructor() {
     this.app = express();
     this.puerto = 8000;
+    this.bodyParser();
     this.rutas();
   }
   rutas() {
@@ -12,6 +14,11 @@ export class Server {
       res.status(201).send("Bienvenido a mi API");
     });
     this.app.use(tareas_router);
+  }
+
+  bodyParser() {
+    // es la forma en la cual configuramos a express para que pueda entender lo que me va a mandar el front
+    this.app.use(json());
   }
 
   start() {
