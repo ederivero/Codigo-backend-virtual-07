@@ -1,0 +1,4 @@
+yarn init [-y]=> inicializar un projecto en nodeJs usando yarn y creara el archivo package.json , con -y saltara todas las preguntas y creara de manera automatica el package.json
+yarn add <nombre_paquete> => instala el paquete en su ultima version
+yarn add <nombre_paquete>@@1.0.0 => instalara el paquete pero en una version en especifico
+yarn global add <nombre_paquete> => instala un paquete de manera global
