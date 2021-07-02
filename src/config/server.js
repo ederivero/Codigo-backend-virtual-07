@@ -11,7 +11,7 @@ export class Server {
   }
   rutas() {
     this.app.get("/", (req, res) => {
-      res.status(201).send("Bienvenido a mi API");
+      return res.status(201).send("Bienvenido a mi API");
     });
     this.app.use(tareas_router);
   }

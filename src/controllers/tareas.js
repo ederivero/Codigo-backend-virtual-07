@@ -63,3 +63,26 @@ export const devolverTarea = (req, res) => {
     message: null,
   });
 };
+
+export const buscarTarea = (req, res) => {
+  // utilizar los query params.
+  console.log(req.query);
+  const filters = req.query;
+  let resultado = [];
+
+  resultado = tareas.filter((tarea) => {
+    let isValid = true;
+    for (let key in filters) {
+      console.log(key, tarea[key], filters[key]);
+      // el operador logico AND (&&) lo que hace es que compara las dos condicionales, si ambas son verdaderas, todo sera verdadero, caso contrario sera Falso
+      isValid = isValid && tarea[key] == filters[key];
+    }
+    return isValid;
+  });
+
+  // buscar la tarea segun el valor, si es nombre buscar x el nombre, si es estado, buscar por el estado y si es id buscar por el id, y si manda todos buscar todos
+  res.json({
+    message: "Ok",
+    content: resultado,
+  });
+};
