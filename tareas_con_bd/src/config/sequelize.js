@@ -1,5 +1,5 @@
 import { Sequelize } from "sequelize";
-
+require("dotenv").config();
 // const conexion = new Sequelize({
 //   database: "tareas",
 //   username: "root",

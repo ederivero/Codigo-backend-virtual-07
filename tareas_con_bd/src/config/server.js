@@ -1,5 +1,6 @@
 import express from "express";
 import { json } from "body-parser";
+import { conexion } from "./sequelize";
 
 export class Server {
   constructor() {
@@ -21,8 +22,17 @@ export class Server {
   }
 
   start() {
-    this.app.listen(this.port, () => {
+    this.app.listen(this.port, async () => {
       console.log(`Servidor corriendo exitosamente en el puerto ${this.port}`);
+      // el metodo sync sirve para sincronizar todos los modelos registrados con las tablas en la bd
+      // alter => si hubo algun cambio en la bd en alguna tabla volver a generar SOLAMENTE esos cambios
+      // force => eliminara todas las tablas (DROP) y las volvera a crear de nuevo
+      try {
+        await conexion.sync();
+        console.log("Base de datos sincronizada correctamente");
+      } catch (error) {
+        console.error(error);
+      }
     });
   }
 }
