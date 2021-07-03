@@ -1,4 +1,6 @@
 import { Tarea } from "../config/modelos";
+// https://sequelize.org/v5/manual/querying.html#operators
+import { Op } from "sequelize";
 
 export const serializadorTarea = (req, res, next) => {
   // analizamos el body
@@ -64,5 +66,84 @@ export const listarTareas = async (req, res) => {
     success: true,
     content: tareas,
     message: null,
+  });
+};
+
+export const actualizarTarea = async (req, res) => {
+  const { id } = req.params;
+  // UPDATE TAREAS set col1=val1 WHERE id = 1
+  const resultado = await Tarea.update(req.body, {
+    where: {
+      tareaId: id,
+    },
+    // returning: true, // Solo funciona en postgresql
+  });
+  // luego de haber actualizado retornar la tarea actualizada, caso contrario indicar que no se encontro la tarea y un estado 400
+  if (resultado[0] === 1) {
+    return res.json({
+      success: true,
+      content: await Tarea.findByPk(id),
+    });
+  } else {
+    return res
+      .json({
+        success: false,
+        content: null,
+        message: "No se encontro la tarea a actualizar",
+      })
+      .status(400);
+  }
+};
+
+export const eliminarTarea = async (req, res) => {
+  const { id } = req.params;
+  // const { id } = req.body;
+  const resultado = await Tarea.destroy({
+    where: { tareaId: id },
+  });
+  // validar la eliminacion indicar si se elimino o si no se encontro
+  console.log(resultado);
+  if (resultado === 1) {
+    return res.json({
+      success: true,
+      content: null,
+      message: "Tarea eliminada con exito",
+    });
+  } else {
+    return res
+      .json({
+        success: false,
+        content: null,
+        message: "No se encontro la tarea a eliminar",
+      })
+      .status(400);
+  }
+};
+
+export const tareaBusqueda = async (req, res) => {
+  // SELECT * FROM TAREAS WHERE NOMBRE LIKE '%python%';
+  const { nombre, estado, id } = req.query;
+  // me mande el estado , el nombre y el id y dependiendo de lo que me mande realizare la busqueda
+  // validaria si hay un nombre, estado o id
+  let filtro = [];
+  // si hay el nombre
+  filtro = [...filtro, { tareaNombre: nombre }];
+  // si hay el id
+  filtro = [...filtro, { tareaId: id }];
+  // si hay el estado
+  filtro = [...filtro, { tareaId: estado }];
+  const resultado = await Tarea.findAll({
+    where: {
+      [Op.and]: filtro,
+      // tareaNombre: {
+      //   [Op.like]: "%" + nombre + "%",
+      // },
+    },
+  });
+
+  console.log(resultado);
+
+  return res.json({
+    success: true,
   });
 };
