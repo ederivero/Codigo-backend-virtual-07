@@ -126,12 +126,20 @@ export const tareaBusqueda = async (req, res) => {
   // me mande el estado , el nombre y el id y dependiendo de lo que me mande realizare la busqueda
   // validaria si hay un nombre, estado o id
   let filtro = [];
-  // si hay el nombre
-  filtro = [...filtro, { tareaNombre: nombre }];
-  // si hay el id
-  filtro = [...filtro, { tareaId: id }];
-  // si hay el estado
-  filtro = [...filtro, { tareaId: estado }];
+
+  if (nombre) {
+    // si hay el nombre
+    filtro = [...filtro, { tareaNombre: { [Op.like]: "%" + nombre + "%" } }];
+  }
+  if (id) {
+    // si hay el id
+    filtro = [...filtro, { tareaId: id }];
+  }
+  if (estado) {
+    // si hay el estado
+    filtro = [...filtro, { tareaEstado: estado }];
+  }
+
   const resultado = await Tarea.findAll({
     where: {
       [Op.and]: filtro,
@@ -141,9 +149,10 @@ export const tareaBusqueda = async (req, res) => {
     },
   });
 
-  console.log(resultado);
+  console.log(filtro);
 
   return res.json({
     success: true,
+    content: resultado,
   });
 };
