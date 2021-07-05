@@ -12,8 +12,8 @@ Hola! 👋🏻 las ramas están organizadas por semana, es decir **CADA RAMA SER
 - Semana 04: <a href="https://github.com/ederivero/Codigo-backend-virtual-06/tree/semana04">semana04</a>
 - Semana 05: <a href="https://github.com/ederivero/Codigo-backend-virtual-06/tree/semana05">semana05</a>
 - Semana 06: <a href="https://github.com/ederivero/Codigo-backend-virtual-06/tree/semana06">semana06</a>
-- Semana 07: semana07
-- Semana 08: semana08
+- Semana 07: <a href="https://github.com/ederivero/Codigo-backend-virtual-06/tree/semana07">semana07</a>
+- Semana 08: <a href="https://github.com/ederivero/Codigo-backend-virtual-06/tree/semana08">semana08</a>
 - Semana 09: semana09
 - Semana 10: semana10
 
