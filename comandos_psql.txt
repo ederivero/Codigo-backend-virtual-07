@@ -1,0 +1,15 @@
+\l => lista todas las bases de datos del servidor
+\c <nombre_bd> => cambia a esa bd
+\dt => lista todas las tablas de esa bd
+\d <nombre_tabla> => toda la especificacion de esa tabla 
+SELECT (); => mostrara la version instalada de PostgreSQL
+\g => repite la anterior consulta ejecutada
+\e => abre un block de notas con la consulta previa ejecutada
+\? => abre la lista de todos los comandos disponibles
+\q => termina la sesion en el psql
+
+# BACKUPS y RESTAURACIONES
+# en windows ambos comandos para poder ejecutarse se deben ubicar en la carpeta:
+C:\Windows\System32\cmd.exe
+pg_dump -U <username> -W -d <database> -h <host> -p <port> > <ubicacion_donde_se_guardara> => hace una copia de seguridad completa de la bd
+psql -U <username> -d <database> < <ubicacion_sql> => restaura la informacion en la bd 
