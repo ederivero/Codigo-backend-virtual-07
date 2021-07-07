@@ -226,8 +226,8 @@ export const DetalleMovimiento = detalleMovimientoModel();
 Producto.hasMany(DetalleMovimiento, { foreignKey: "producto_id" });
 DetalleMovimiento.belongsTo(Producto, { foreignKey: "producto_id" });
 
-Tipo.hasMany(Accion, { foreignKey: "tipo_id" });
-Accion.belongsTo(Tipo, { foreignKey: "tipo_id" });
+Tipo.hasMany(Accion, { foreignKey: { name: "tipo_id", allowNull: false } });
+Accion.belongsTo(Tipo, { foreignKey: { name: "tipo_id", allowNull: false } });
 
 Tipo.hasMany(Usuario, { foreignKey: "tipo_id" });
 Usuario.belongsTo(Tipo, { foreignKey: "tipo_id" });

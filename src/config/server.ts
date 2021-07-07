@@ -1,8 +1,9 @@
 import express, { Request, Response, Express } from "express";
-import { json } from "body-parser";
-import conexion from "./sequelize";
-import { tipoRouter } from "../routes/tipo";
 import morgan from "morgan";
+import { json } from "body-parser";
+import { tipoRouter } from "../routes/tipo";
+import { accionRouter } from "../routes/accion";
+import conexion from "./sequelize";
 
 export default class Server {
   app: Express;
@@ -25,13 +26,14 @@ export default class Server {
       res.send("Bienvenido a la api de zapateria");
     });
     this.app.use(tipoRouter);
+    this.app.use(accionRouter);
   }
 
   start() {
     this.app.listen(this.port, async () => {
       console.log("Servidor corriendo exitosamente");
       try {
-        await conexion.sync();
+        await conexion.sync({ force: true });
         console.log("Base de datos sincronizada exitosamente");
       } catch (e) {
         console.error(e);

@@ -33,9 +33,24 @@ export const crearTipo = async (
     const rpta: TRespuesta = {
       success: false,
       message: "Error al crear el tipo",
-      content: null,
+      content: error.message,
     };
 
     return res.status(400).json(rpta);
   }
+};
+
+// retornar todos los tipos
+export const listarTipos = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
+  const tipos = await Tipo.findAll();
+  const rpta: TRespuesta = {
+    success: true,
+    content: tipos,
+    message: "",
+  };
+
+  return res.status(200).json(rpta);
 };
