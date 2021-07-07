@@ -60,11 +60,13 @@ const tipoModel = () =>
         type: DataTypes.INTEGER,
         field: "id",
         primaryKey: true,
+        autoIncrement: true,
         unique: true,
       },
       tipoDescripcion: {
         type: DataTypes.STRING(45),
         field: "descripcion",
+        unique: true,
       },
     },
     {
@@ -82,6 +84,7 @@ const accionModel = () =>
         field: "id",
         primaryKey: true,
         unique: true,
+        autoIncrement: true,
       },
       accionDescripcion: {
         type: DataTypes.STRING(45),
@@ -103,6 +106,7 @@ const usuarioModel = () =>
         field: "id",
         primaryKey: true,
         unique: true,
+        autoIncrement: true,
       },
       usuarioNombre: {
         type: DataTypes.STRING(45),
@@ -154,6 +158,7 @@ const movimientoModel = () =>
         unique: true,
         field: "id",
         allowNull: false,
+        autoIncrement: true,
       },
       movimientoFecha: {
         type: DataTypes.DATE,
@@ -190,6 +195,7 @@ const detalleMovimientoModel = () =>
         field: "id",
         type: DataTypes.INTEGER,
         primaryKey: true,
+        autoIncrement: true,
         allowNull: false,
       },
       detalleMovimientoCantidad: {
@@ -209,3 +215,25 @@ const detalleMovimientoModel = () =>
   );
 
 // RELACIONES
+
+export const Producto = productoModel();
+export const Tipo = tipoModel();
+export const Accion = accionModel();
+export const Usuario = usuarioModel();
+export const Movimiento = movimientoModel();
+export const DetalleMovimiento = detalleMovimientoModel();
+
+Producto.hasMany(DetalleMovimiento, { foreignKey: "producto_id" });
+DetalleMovimiento.belongsTo(Producto, { foreignKey: "producto_id" });
+
+Tipo.hasMany(Accion, { foreignKey: "tipo_id" });
+Accion.belongsTo(Tipo, { foreignKey: "tipo_id" });
+
+Tipo.hasMany(Usuario, { foreignKey: "tipo_id" });
+Usuario.belongsTo(Tipo, { foreignKey: "tipo_id" });
+
+Usuario.hasMany(Movimiento, { foreignKey: "usuario_id" });
+Movimiento.belongsTo(Usuario, { foreignKey: "usuario_id" });
+
+Movimiento.hasMany(DetalleMovimiento, { foreignKey: "movimiento_id" });
+DetalleMovimiento.belongsTo(Movimiento, { foreignKey: "movimiento_id" });
