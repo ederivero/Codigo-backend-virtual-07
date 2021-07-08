@@ -1,8 +1,8 @@
-import { hashSync } from "bcrypt";
-import { Model } from "sequelize";
+import { compareSync, hashSync } from "bcrypt";
 import { Request, Response } from "express";
 import { Usuario } from "../config/models";
 import { TRespuesta } from "./dto.response";
+import { sign } from "jsonwebtoken";
 
 export const registro = async (
   req: Request,
@@ -38,7 +38,6 @@ export const registro = async (
       message: "Usuario creado exitosamente",
       success: true,
     };
-    console.log(await Usuario.findAll());
     return res.status(201).json(rpta);
   } catch (error) {
     const rpta: TRespuesta = {
@@ -49,4 +48,44 @@ export const registro = async (
 
     return res.status(400).json(rpta);
   }
+};
+
+export const login = async (req: Request, res: Response) => {
+  const { email, password } = req.body;
+
+  const usuario = await Usuario.findOne({
+    where: {
+      usuarioCorreo: email,
+    },
+  });
+
+  if (usuario) {
+    const resultado = compareSync(
+      password,
+      usuario.getDataValue("usuarioPassword")
+    );
+    if (resultado) {
+      // entonces es el usuario y su contraseña es la correcta
+      const payload = {
+        usuarioId: usuario.getDataValue("usuarioId"),
+      };
+
+      const token = sign(payload, String(process.env.JWT_SECRET), {
+        expiresIn: "1h",
+      });
+      const rpta: TRespuesta = {
+        success: true,
+        content: token,
+        message: "",
+      };
+      return res.json(rpta);
+    }
+  }
+
+  const rpta: TRespuesta = {
+    success: false,
+    content: null,
+    message: "Credenciales incorrectas",
+  };
+  return res.status(404).json(rpta);
 };
