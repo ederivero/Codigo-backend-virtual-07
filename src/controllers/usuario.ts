@@ -1,4 +1,5 @@
 import { hashSync } from "bcrypt";
+import { Model } from "sequelize";
 import { Request, Response } from "express";
 import { Usuario } from "../config/models";
 import { TRespuesta } from "./dto.response";
@@ -8,8 +9,23 @@ export const registro = async (
   res: Response
 ): Promise<Response> => {
   try {
+    const {
+      email: usuarioCorreo,
+      password: usuarioPassword,
+      nombre: usuarioNombre,
+      tipo: tipoId,
+    } = req.body;
     // METODO 1
-    const nuevoUsuario = await Usuario.create(req.body);
+
+    const nuevoUsuario = await Usuario.create({
+      usuarioCorreo,
+      usuarioPassword,
+      usuarioNombre,
+      tipoId,
+    });
+
+    // quitar la password al momento de retornar el json
+    nuevoUsuario.setDataValue("usuarioPassword", null);
 
     // METODO 2
     // const nuevoUsuario = Usuario.build(req.body)

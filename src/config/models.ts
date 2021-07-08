@@ -228,53 +228,63 @@ export const DetalleMovimiento = detalleMovimientoModel();
 
 Producto.hasMany(DetalleMovimiento, {
   foreignKey: {
+    name: "productoId",
     allowNull: false,
-    name: "producto_id",
+    field: "producto_id",
   },
 });
 DetalleMovimiento.belongsTo(Producto, {
   foreignKey: {
+    name: "productoId",
     allowNull: false,
-    name: "producto_id",
+    field: "producto_id",
   },
 });
 
 Tipo.hasMany(Accion, {
-  foreignKey: { allowNull: false, name: "tipo_id" },
+  foreignKey: {
+    name: "tipoId",
+    allowNull: false,
+    field: "tipo_id",
+  },
 });
 Accion.belongsTo(Tipo, {
-  foreignKey: { allowNull: false, name: "tipo_id" },
+  foreignKey: { name: "tipoId", allowNull: false, field: "tipo_id" },
 });
 
 Tipo.hasMany(Usuario, {
-  foreignKey: { allowNull: false, name: "tipo_id" },
+  foreignKey: { name: "tipoId", allowNull: false, field: "tipo_id" },
 });
 Usuario.belongsTo(Tipo, {
-  foreignKey: { allowNull: false, name: "tipo_id" },
+  foreignKey: { name: "tipoId", allowNull: false, field: "tipo_id" },
 });
 
 Usuario.hasMany(Movimiento, {
   foreignKey: {
+    name: "usuarioId",
     allowNull: false,
-    name: "usuario_id",
+    field: "usuario_id",
   },
 });
 Movimiento.belongsTo(Usuario, {
   foreignKey: {
+    name: "usuarioId",
     allowNull: false,
-    name: "usuario_id",
+    field: "usuario_id",
   },
 });
 
 Movimiento.hasMany(DetalleMovimiento, {
   foreignKey: {
+    name: "movimientoId",
     allowNull: false,
-    name: "movimiento_id",
+    field: "movimiento_id",
   },
 });
 DetalleMovimiento.belongsTo(Movimiento, {
   foreignKey: {
+    name: "movimientoId",
     allowNull: false,
-    name: "movimiento_id",
+    field: "movimiento_id",
   },
 });
