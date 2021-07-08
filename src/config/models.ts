@@ -125,6 +125,7 @@ const usuarioModel = () =>
           isEmail: true,
         },
         allowNull: false,
+        unique: true,
       },
       usuarioPassword: {
         type: DataTypes.TEXT,
