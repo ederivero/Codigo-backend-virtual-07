@@ -3,6 +3,7 @@ import morgan from "morgan";
 import { json } from "body-parser";
 import { tipoRouter } from "../routes/tipo";
 import { accionRouter } from "../routes/accion";
+import { usuarioRouter } from "../routes/usuario";
 import conexion from "./sequelize";
 
 export default class Server {
@@ -27,6 +28,7 @@ export default class Server {
     });
     this.app.use(tipoRouter);
     this.app.use(accionRouter);
+    this.app.use(usuarioRouter);
   }
 
   start() {

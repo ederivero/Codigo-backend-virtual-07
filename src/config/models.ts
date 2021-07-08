@@ -1,4 +1,5 @@
 import { DataTypes } from "sequelize";
+import { hashSync } from "bcrypt";
 import conexion from "../config/sequelize";
 
 const productoModel = () =>
@@ -112,8 +113,8 @@ const usuarioModel = () =>
         type: DataTypes.STRING(45),
         field: "nombre",
         validate: {
-          // is: /([A-Z])\w+([ ])/,
-          isNumeric: false,
+          is: /([A-Z])\w+([ ])/,
+          // isNumeric: false,
         },
         allowNull: false,
       },
@@ -128,15 +129,17 @@ const usuarioModel = () =>
       usuarioPassword: {
         type: DataTypes.TEXT,
         field: "password",
-        validate: {
-          isAlpha: true,
-        },
         allowNull: false,
+        set(passwordSinEncriptar) {
+          // aca encriptare mi contraseña
+          const passwordEncriptada = hashSync(String(passwordSinEncriptar), 10);
+          console.log(passwordEncriptada);
+          this.setDataValue("usuarioPassword", passwordEncriptada);
+        },
       },
       usuarioImagen: {
         type: DataTypes.TEXT,
         field: "imagen",
-        allowNull: false,
         validate: {
           isUrl: true,
         },
@@ -223,17 +226,55 @@ export const Usuario = usuarioModel();
 export const Movimiento = movimientoModel();
 export const DetalleMovimiento = detalleMovimientoModel();
 
-Producto.hasMany(DetalleMovimiento, { foreignKey: "producto_id" });
-DetalleMovimiento.belongsTo(Producto, { foreignKey: "producto_id" });
+Producto.hasMany(DetalleMovimiento, {
+  foreignKey: {
+    allowNull: false,
+    name: "producto_id",
+  },
+});
+DetalleMovimiento.belongsTo(Producto, {
+  foreignKey: {
+    allowNull: false,
+    name: "producto_id",
+  },
+});
 
-Tipo.hasMany(Accion, { foreignKey: { name: "tipo_id", allowNull: false } });
-Accion.belongsTo(Tipo, { foreignKey: { name: "tipo_id", allowNull: false } });
+Tipo.hasMany(Accion, {
+  foreignKey: { allowNull: false, name: "tipo_id" },
+});
+Accion.belongsTo(Tipo, {
+  foreignKey: { allowNull: false, name: "tipo_id" },
+});
 
-Tipo.hasMany(Usuario, { foreignKey: "tipo_id" });
-Usuario.belongsTo(Tipo, { foreignKey: "tipo_id" });
+Tipo.hasMany(Usuario, {
+  foreignKey: { allowNull: false, name: "tipo_id" },
+});
+Usuario.belongsTo(Tipo, {
+  foreignKey: { allowNull: false, name: "tipo_id" },
+});
 
-Usuario.hasMany(Movimiento, { foreignKey: "usuario_id" });
-Movimiento.belongsTo(Usuario, { foreignKey: "usuario_id" });
+Usuario.hasMany(Movimiento, {
+  foreignKey: {
+    allowNull: false,
+    name: "usuario_id",
+  },
+});
+Movimiento.belongsTo(Usuario, {
+  foreignKey: {
+    allowNull: false,
+    name: "usuario_id",
+  },
+});
 
-Movimiento.hasMany(DetalleMovimiento, { foreignKey: "movimiento_id" });
-DetalleMovimiento.belongsTo(Movimiento, { foreignKey: "movimiento_id" });
+Movimiento.hasMany(DetalleMovimiento, {
+  foreignKey: {
+    allowNull: false,
+    name: "movimiento_id",
+  },
+});
+DetalleMovimiento.belongsTo(Movimiento, {
+  foreignKey: {
+    allowNull: false,
+    name: "movimiento_id",
+  },
+});

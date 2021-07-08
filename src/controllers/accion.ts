@@ -25,3 +25,5 @@ export const crearAccion = async (
     return res.status(400).json(rpta);
   }
 };
+
+// listar accion
