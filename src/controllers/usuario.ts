@@ -1,8 +1,10 @@
 import { compareSync, hashSync } from "bcrypt";
 import { Request, Response } from "express";
-import { Usuario } from "../config/models";
-import { TRespuesta } from "./dto.response";
 import { sign } from "jsonwebtoken";
+import { Usuario } from "../config/models";
+import { RequestCustom } from "../utils/validador";
+import { TRespuesta } from "./dto.response";
+require("dotenv").config();
 
 export const registro = async (
   req: Request,
@@ -69,9 +71,10 @@ export const login = async (req: Request, res: Response) => {
       const payload = {
         usuarioId: usuario.getDataValue("usuarioId"),
       };
+      console.log(process.env.JWT_SECRET);
 
       const token = sign(payload, String(process.env.JWT_SECRET), {
-        expiresIn: "1h",
+        expiresIn: 30,
       });
       const rpta: TRespuesta = {
         success: true,
@@ -88,4 +91,13 @@ export const login = async (req: Request, res: Response) => {
     message: "Credenciales incorrectas",
   };
   return res.status(404).json(rpta);
+};
+
+export const perfil = (req: RequestCustom, res: Response): Response => {
+  const rpta: TRespuesta = {
+    content: req?.user,
+    message: "",
+    success: true,
+  };
+  return res.json(rpta);
 };

@@ -5,6 +5,7 @@ import { tipoRouter } from "../routes/tipo";
 import { accionRouter } from "../routes/accion";
 import { usuarioRouter } from "../routes/usuario";
 import conexion from "./sequelize";
+import { productoRouter } from "../routes/producto";
 
 export default class Server {
   app: Express;
@@ -29,6 +30,7 @@ export default class Server {
     this.app.use(tipoRouter);
     this.app.use(accionRouter);
     this.app.use(usuarioRouter);
+    this.app.use(productoRouter);
   }
 
   start() {

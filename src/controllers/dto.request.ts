@@ -14,6 +14,14 @@ type TLoginRequest = {
   password: string;
 };
 
+type TProductoRequest = {
+  productoNombre: string;
+  productoPrecio: number;
+  productoEstado?: boolean;
+  productoImagen?: string;
+  productoDescripcion?: string;
+};
+
 export const tipoRequestDto = (
   req: Request,
   res: Response,
@@ -68,6 +76,26 @@ export const loginRequestDto = (
       message: "Falta el email y la password",
       success: false,
     };
+    return res.status(400).json(rpta);
+  }
+};
+
+export const productoRequestDto = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Response | void => {
+  const { ...data }: TProductoRequest = req.body;
+
+  if (data?.productoNombre && data?.productoPrecio) {
+    next();
+  } else {
+    const rpta: TRespuesta = {
+      success: false,
+      content: null,
+      message: "Falta el productoNombre o el productoPrecio",
+    };
+
     return res.status(400).json(rpta);
   }
 };
