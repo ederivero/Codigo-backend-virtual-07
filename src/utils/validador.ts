@@ -25,6 +25,8 @@ export const authValidator = async (
   res: Response,
   next: NextFunction
 ) => {
+  // TODO: agregar la funcionalidad para que si esa token ya esta en la blacklist  entonces no deberia proceder
+
   // primero valido si me provee la token x la authorizations sino, retorno un estado 401
   if (!req.headers.authorization) {
     const rpta: TRespuesta = {

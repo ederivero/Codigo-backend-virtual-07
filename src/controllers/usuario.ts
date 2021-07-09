@@ -1,7 +1,7 @@
 import { compareSync, hashSync } from "bcrypt";
 import { Request, Response } from "express";
 import { sign } from "jsonwebtoken";
-import { Usuario } from "../config/models";
+import { BlackList, Usuario } from "../config/models";
 import { RequestCustom } from "../utils/validador";
 import { TRespuesta } from "./dto.response";
 require("dotenv").config();
@@ -100,4 +100,29 @@ export const perfil = (req: RequestCustom, res: Response): Response => {
     success: true,
   };
   return res.json(rpta);
+};
+
+export const logout = async (req: Request, res: Response) => {
+  // hagan la logica de que debe de suceder cuando se hace un logout
+  if (!req.headers.authorization) {
+    const rpta: TRespuesta = {
+      content: null,
+      message: "Error al hacer el logout, se necesita una token en los headers",
+      success: false,
+    };
+    return res.status(400).json(rpta);
+  }
+  const token = req.headers.authorization.split(" ")[1];
+  try {
+    await BlackList.create({ blackListToken: token });
+    // el estado 204 se usa cuando para indicar que la operacion fue realizada exitosamente PERO no se retorno nada (no hay contenido)
+    return res.status(204).send();
+  } catch (error) {
+    const rpta: TRespuesta = {
+      content: null,
+      message: "Error al hacer el logout",
+      success: false,
+    };
+    return res.status(400).json(rpta);
+  }
 };

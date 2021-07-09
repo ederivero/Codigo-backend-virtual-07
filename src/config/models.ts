@@ -218,6 +218,22 @@ const detalleMovimientoModel = () =>
     }
   );
 
+const blackListModel = () =>
+  conexion.define(
+    "blackList",
+    {
+      blackListToken: {
+        type: DataTypes.TEXT,
+        allowNull: false,
+        primaryKey: true,
+      },
+    },
+    {
+      tableName: "black_list",
+      timestamps: false,
+    }
+  );
+
 // RELACIONES
 
 export const Producto = productoModel();
@@ -226,6 +242,8 @@ export const Accion = accionModel();
 export const Usuario = usuarioModel();
 export const Movimiento = movimientoModel();
 export const DetalleMovimiento = detalleMovimientoModel();
+export const BlackList = blackListModel();
+// BlackList.sync({ force: true });
 
 Producto.hasMany(DetalleMovimiento, {
   foreignKey: {
