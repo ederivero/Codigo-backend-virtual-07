@@ -3,6 +3,7 @@ import { Request, Response } from "express";
 import { sign } from "jsonwebtoken";
 import { BlackList, Usuario, Imagen } from "../config/models";
 import { RequestCustom } from "../utils/validador";
+import { generarUrl } from "../utils/manejoArchivoFirebase";
 import { TRespuesta } from "./dto.response";
 require("dotenv").config();
 
@@ -28,12 +29,19 @@ export const registro = async (
       imagenId,
     });
     // solamente el uso de joins (include) funciona en lo que seria los finds
-    const respuesta = await Usuario.findOne({
+    const usuarioEncontrado = await Usuario.findOne({
       attributes: { exclude: ["usuarioPassword"] },
       where: { usuarioId: nuevoUsuario.getDataValue("usuarioId") },
       include: { model: Imagen },
     });
+    // imagenURL = "https://..."
+    const imagen = usuarioEncontrado?.getDataValue("imagen");
+    const url = await generarUrl(
+      imagen.imagenPath,
+      `${imagen.imagenNombre}.${imagen.imagenExtension}`
+    );
 
+    const respuesta = { ...usuarioEncontrado?.toJSON(), url };
     // quitar la password al momento de retornar el json
     // nuevoUsuario.setDataValue("usuarioPassword", null);
 
@@ -101,9 +109,26 @@ export const login = async (req: Request, res: Response) => {
   return res.status(404).json(rpta);
 };
 
-export const perfil = (req: RequestCustom, res: Response): Response => {
+export const perfil = async (
+  req: RequestCustom,
+  res: Response
+): Promise<Response> => {
+  // agregar la url de la imagen si es que tuviese
+  const imagenId = req?.user?.getDataValue("imagenId");
+
+  const imagenEncontrada = await Imagen.findByPk(imagenId);
+
+  const url = await generarUrl(
+    imagenEncontrada?.getDataValue("imagenPath"),
+    `${imagenEncontrada?.getDataValue(
+      "imagenNombre"
+    )}.${imagenEncontrada?.getDataValue("imagenExtension")}`
+  );
+
+  const content = { ...req?.user?.toJSON(), url };
+
   const rpta: TRespuesta = {
-    content: req?.user,
+    content,
     message: "",
     success: true,
   };
@@ -111,7 +136,6 @@ export const perfil = (req: RequestCustom, res: Response): Response => {
 };
 
 export const logout = async (req: Request, res: Response) => {
-  // hagan la logica de que debe de suceder cuando se hace un logout
   if (!req.headers.authorization) {
     const rpta: TRespuesta = {
       content: null,

@@ -22,6 +22,21 @@ type TProductoRequest = {
   productoDescripcion?: string;
 };
 
+type TDetalleMovimientoRequest = {
+  detalleMovimientoCantidad: number;
+  detalleMovimientoPrecio: number;
+  productoId: number;
+  movimientoId: number;
+};
+
+type TMovimientoRequest = {
+  movimientoFecha: string;
+  movimientoTipo: "INGRESO" | "EGRESO";
+  movimientoTotal: number;
+  usuarioId: number;
+  movimientoDetalle: Array<TDetalleMovimientoRequest>;
+};
+
 export const tipoRequestDto = (
   req: Request,
   res: Response,
@@ -94,6 +109,26 @@ export const productoRequestDto = (
       success: false,
       content: null,
       message: "Falta el productoNombre o el productoPrecio",
+    };
+
+    return res.status(400).json(rpta);
+  }
+};
+
+export const movimientoRequestDto = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { ...data }: TMovimientoRequest = req.body;
+
+  if (data) {
+    next();
+  } else {
+    const rpta: TRespuesta = {
+      success: false,
+      content: null,
+      message: "Faltan datos del movimiento",
     };
 
     return res.status(400).json(rpta);

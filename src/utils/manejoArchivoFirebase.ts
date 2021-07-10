@@ -54,9 +54,12 @@ export const subirArchivoUtil = (
   });
 };
 
-export const generarUrl = async (fileName: string): Promise<string> => {
+export const generarUrl = async (
+  carpeta: string,
+  fileName: string
+): Promise<string> => {
   try {
-    const url = await bucket.file(fileName).getSignedUrl({
+    const url = await bucket.file(`${carpeta}/${fileName}`).getSignedUrl({
       action: "read",
       expires: Date.now() + 1000 * 60 * 60,
     });
