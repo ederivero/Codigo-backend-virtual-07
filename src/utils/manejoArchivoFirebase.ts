@@ -11,14 +11,26 @@ const storage = new Storage({
 const bucket = storage.bucket("zapateria-codigo-eduardo.appspot.com");
 
 export const subirArchivoUtil = (
-  archivo: Express.Multer.File
+  archivo: Express.Multer.File,
+  path: string
 ): Promise<string> => {
   return new Promise((resolve, reject) => {
     if (!archivo) {
       reject("No se encontro el archivo");
     }
     // comienza el proceso de subida de imagenes
-    const newFile = bucket.file(archivo.originalname);
+    const nombre = archivo.originalname.split(".");
+
+    const extension = nombre[nombre.length - 1];
+
+    const archivo_sin_extension = archivo.originalname.replace(
+      `.${extension}`,
+      ""
+    );
+
+    const newFile = bucket.file(
+      `${path}/${archivo_sin_extension}_${Date.now()}.${extension}`
+    );
 
     // agregar configuracion adicional de nuestro archivo como su metadata
     const blobStream = newFile.createWriteStream({
