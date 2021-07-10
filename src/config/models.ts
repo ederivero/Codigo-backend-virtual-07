@@ -141,9 +141,6 @@ const usuarioModel = () =>
       usuarioImagen: {
         type: DataTypes.TEXT,
         field: "imagen",
-        validate: {
-          isUrl: true,
-        },
       },
     },
     {
@@ -243,8 +240,8 @@ export const Usuario = usuarioModel();
 export const Movimiento = movimientoModel();
 export const DetalleMovimiento = detalleMovimientoModel();
 export const BlackList = blackListModel();
-// BlackList.sync({ force: true });
 
+// BlackList.sync({ force: true });
 Producto.hasMany(DetalleMovimiento, {
   foreignKey: {
     name: "productoId",
