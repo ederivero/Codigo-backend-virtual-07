@@ -116,7 +116,7 @@ export const logout = async (req: Request, res: Response) => {
   try {
     await BlackList.create({ blackListToken: token });
     // el estado 204 se usa cuando para indicar que la operacion fue realizada exitosamente PERO no se retorno nada (no hay contenido)
-    return res.status(204).send();
+    return res.status(204).end();
   } catch (error) {
     const rpta: TRespuesta = {
       content: null,

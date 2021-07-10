@@ -1,7 +1,7 @@
 import { verify } from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
 import { TRespuesta } from "../controllers/dto.response";
-import { Usuario } from "../config/models";
+import { Usuario, BlackList } from "../config/models";
 import { Model } from "sequelize";
 
 export interface RequestCustom extends Request {
@@ -25,8 +25,6 @@ export const authValidator = async (
   res: Response,
   next: NextFunction
 ) => {
-  // TODO: agregar la funcionalidad para que si esa token ya esta en la blacklist  entonces no deberia proceder
-
   // primero valido si me provee la token x la authorizations sino, retorno un estado 401
   if (!req.headers.authorization) {
     const rpta: TRespuesta = {
@@ -39,6 +37,21 @@ export const authValidator = async (
   // Bearer 1231.23123123.12312313
   const token = req.headers.authorization.split(" ")[1];
   // ["Bearer", "1231.23123123.12312313"]
+
+  // TODO: agregar la funcionalidad para que si esa token ya esta en la blacklist  entonces no deberia proceder
+  const blacklistToken = await BlackList.findByPk(token);
+  // const blacklistToken2 = await BlackList.findOne({
+  //   where: { blackListToken: token },
+  // });
+
+  if (blacklistToken) {
+    const rpta: TRespuesta = {
+      content: null,
+      message: "Token invalida",
+      success: false,
+    };
+    return res.status(401).json(rpta);
+  }
 
   const respuesta = verificarToken(token);
 
