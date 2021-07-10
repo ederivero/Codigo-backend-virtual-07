@@ -19,18 +19,8 @@ export const subirArchivoUtil = (
       reject("No se encontro el archivo");
     }
     // comienza el proceso de subida de imagenes
-    const nombre = archivo.originalname.split(".");
 
-    const extension = nombre[nombre.length - 1];
-
-    const archivo_sin_extension = archivo.originalname.replace(
-      `.${extension}`,
-      ""
-    );
-
-    const newFile = bucket.file(
-      `${path}/${archivo_sin_extension}_${Date.now()}.${extension}`
-    );
+    const newFile = bucket.file(`${path}/${archivo.originalname}`);
 
     // agregar configuracion adicional de nuestro archivo como su metadata
     const blobStream = newFile.createWriteStream({
@@ -71,6 +61,23 @@ export const generarUrl = async (fileName: string): Promise<string> => {
       expires: Date.now() + 1000 * 60 * 60,
     });
     return url.toString();
+  } catch (error) {
+    return error;
+  }
+};
+
+export const eliminarArchivoUtitl = async (
+  carpeta: string,
+  archivo: string
+) => {
+  try {
+    const respuesta = await bucket
+      .file(`${carpeta}/${archivo}`)
+      .delete({ ignoreNotFound: true });
+
+    console.log(respuesta);
+
+    return respuesta;
   } catch (error) {
     return error;
   }

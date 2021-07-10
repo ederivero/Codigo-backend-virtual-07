@@ -21,22 +21,30 @@ export const subirImagen = async (req: Request, res: Response) => {
   if (req.file) {
     const archivo = req.file;
     try {
-      const respuesta = await subirArchivoUtil(archivo, String(carpeta));
-      // luego de subir el archivo a firebase, guardar la imagen
-      let nombre: string[] | string = archivo.originalname.split(".");
+      const nombre = archivo.originalname.split(".");
 
       const extension = nombre[nombre.length - 1];
 
-      nombre = archivo.originalname.replace(`.${extension}`, "");
+      const archivo_sin_extension = archivo.originalname.replace(
+        `.${extension}`,
+        ""
+      );
+      const nombre_archivo = `${archivo_sin_extension}_${Date.now()}`;
+      archivo.originalname = `${nombre_archivo}.${extension}`;
 
-      await Imagen.create({
-        imagenNombre: nombre,
+      const link = await subirArchivoUtil(archivo, String(carpeta));
+      // luego de subir el archivo a firebase, guardar la imagen
+
+      const nuevaImagen = await Imagen.create({
+        imagenNombre: nombre_archivo,
         imagenExtension: extension,
         imagenPath: carpeta,
       });
 
+      const content = { ...nuevaImagen.toJSON(), link };
+
       const rpta: TRespuesta = {
-        content: respuesta,
+        content,
         message: "Archivo subido exitosamente",
         success: true,
       };

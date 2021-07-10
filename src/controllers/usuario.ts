@@ -1,7 +1,7 @@
-import { compareSync, hashSync } from "bcrypt";
+import { compareSync } from "bcrypt";
 import { Request, Response } from "express";
 import { sign } from "jsonwebtoken";
-import { BlackList, Usuario } from "../config/models";
+import { BlackList, Usuario, Imagen } from "../config/models";
 import { RequestCustom } from "../utils/validador";
 import { TRespuesta } from "./dto.response";
 require("dotenv").config();
@@ -16,6 +16,7 @@ export const registro = async (
       password: usuarioPassword,
       nombre: usuarioNombre,
       tipo: tipoId,
+      imagenId,
     } = req.body;
     // METODO 1
 
@@ -24,10 +25,17 @@ export const registro = async (
       usuarioPassword,
       usuarioNombre,
       tipoId,
+      imagenId,
+    });
+    // solamente el uso de joins (include) funciona en lo que seria los finds
+    const respuesta = await Usuario.findOne({
+      attributes: { exclude: ["usuarioPassword"] },
+      where: { usuarioId: nuevoUsuario.getDataValue("usuarioId") },
+      include: { model: Imagen },
     });
 
     // quitar la password al momento de retornar el json
-    nuevoUsuario.setDataValue("usuarioPassword", null);
+    // nuevoUsuario.setDataValue("usuarioPassword", null);
 
     // METODO 2
     // const nuevoUsuario = Usuario.build(req.body)
@@ -36,7 +44,7 @@ export const registro = async (
     // nuevoUsuario.save()
 
     const rpta: TRespuesta = {
-      content: nuevoUsuario,
+      content: respuesta,
       message: "Usuario creado exitosamente",
       success: true,
     };
