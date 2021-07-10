@@ -37,11 +37,6 @@ const productoModel = () =>
         defaultValue: true,
         field: "estado",
       },
-      productoImagen: {
-        type: DataTypes.TEXT,
-        defaultValue: "https://loremflickr.com/500/500",
-        field: "imagen",
-      },
       productoDescripcion: {
         type: DataTypes.STRING(45),
         field: "descripcion",
@@ -138,10 +133,6 @@ const usuarioModel = () =>
           this.setDataValue("usuarioPassword", passwordEncriptada);
         },
       },
-      usuarioImagen: {
-        type: DataTypes.TEXT,
-        field: "imagen",
-      },
     },
     {
       tableName: "usuarios",
@@ -231,6 +222,39 @@ const blackListModel = () =>
     }
   );
 
+const imagenModel = () =>
+  conexion.define(
+    "imagen",
+    {
+      imagenId: {
+        primaryKey: true,
+        autoIncrement: true,
+        type: DataTypes.INTEGER,
+        unique: true,
+        field: "id",
+      },
+      imagenNombre: {
+        type: DataTypes.TEXT,
+        allowNull: false,
+        field: "nombre",
+      },
+      imagenExtension: {
+        type: DataTypes.STRING(5),
+        field: "extension",
+        allowNull: false,
+      },
+      imagenPath: {
+        type: DataTypes.TEXT,
+        field: "path",
+        allowNull: false,
+      },
+    },
+    {
+      tableName: "imagenes",
+      timestamps: false,
+    }
+  );
+
 // RELACIONES
 
 export const Producto = productoModel();
@@ -240,6 +264,7 @@ export const Usuario = usuarioModel();
 export const Movimiento = movimientoModel();
 export const DetalleMovimiento = detalleMovimientoModel();
 export const BlackList = blackListModel();
+export const Imagen = imagenModel();
 
 // BlackList.sync({ force: true });
 Producto.hasMany(DetalleMovimiento, {
@@ -303,4 +328,18 @@ DetalleMovimiento.belongsTo(Movimiento, {
     allowNull: false,
     field: "movimiento_id",
   },
+});
+
+Usuario.hasOne(Imagen, {
+  foreignKey: { name: "usuarioId", field: "usuario_id" },
+});
+Imagen.belongsTo(Usuario, {
+  foreignKey: { name: "usuarioId", field: "usuario_id" },
+});
+
+Producto.hasMany(Imagen, {
+  foreignKey: { name: "productoId", field: "producto_id" },
+});
+Imagen.belongsTo(Producto, {
+  foreignKey: { name: "productoId", field: "producto_id" },
 });
