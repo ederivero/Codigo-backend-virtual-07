@@ -1,8 +1,8 @@
 import { verify } from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
 import { TRespuesta } from "../controllers/dto.response";
-import { Usuario, BlackList } from "../config/models";
-import { Model } from "sequelize";
+import { Usuario, BlackList, Tipo } from "../config/models";
+import { Model, Op } from "sequelize";
 
 export interface RequestCustom extends Request {
   user?: Model | null;
@@ -73,6 +73,30 @@ export const authValidator = async (
     const rpta: TRespuesta = {
       content: null,
       message: "Token invalida",
+      success: false,
+    };
+
+    return res.status(401).json(rpta);
+  }
+};
+
+export const isAdmin = async (
+  req: RequestCustom,
+  res: Response,
+  next: NextFunction
+) => {
+  const administrador = await Tipo.findOne({
+    where: { tipoDescripcion: { [Op.like]: "%ADMINISTRADOR%" } },
+  });
+
+  if (
+    req.user?.getDataValue("tipoId") === administrador?.getDataValue("tipoId")
+  ) {
+    next();
+  } else {
+    const rpta: TRespuesta = {
+      content: null,
+      message: "El usuario no es administrador",
       success: false,
     };
 
