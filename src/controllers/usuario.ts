@@ -90,7 +90,7 @@ export const login = async (req: Request, res: Response) => {
       console.log(process.env.JWT_SECRET);
 
       const token = sign(payload, String(process.env.JWT_SECRET), {
-        expiresIn: 30,
+        expiresIn: "1h",
       });
       const rpta: TRespuesta = {
         success: true,

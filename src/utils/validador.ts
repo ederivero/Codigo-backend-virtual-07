@@ -67,6 +67,7 @@ export const authValidator = async (
     // console.log(usuario);
 
     req.user = usuario;
+
     next();
   } else {
     const rpta: TRespuesta = {

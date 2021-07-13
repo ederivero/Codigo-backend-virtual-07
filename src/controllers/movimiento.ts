@@ -1,4 +1,81 @@
 import { Request, Response } from "express";
 import { Movimiento, DetalleMovimiento } from "../config/models";
+import conexion from "../config/sequelize";
+import { RequestCustom } from "../utils/validador";
+import { TMovimientoRequest } from "./dto.request";
+import { TRespuesta } from "./dto.response";
 
-export const crearMovimiento = (req: Request, res: Response) => {};
+export const crearMovimiento = async (req: RequestCustom, res: Response) => {
+  const transaccion = await conexion.transaction();
+  try {
+    const {
+      movimientoFecha,
+      movimientoTipo,
+      movimientoDetalle,
+    }: TMovimientoRequest = req.body;
+    const nuevoMovimiento = await Movimiento.create(
+      {
+        movimientoFecha,
+        movimientoTipo,
+        movimientoTotal: 0.0,
+        usuarioId: req.user?.getDataValue("usuarioId"),
+      },
+      { transaction: transaccion }
+    );
+    // movimientoDetalle.forEach(async (detalle) => {
+    //   await DetalleMovimiento.create({
+    //     detalleMovimientoCantidad: detalle.detalleMovimientoCantidad,
+    //     detalleMovimientoPrecio: detalle.detalleMovimientoPrecio,
+    //     productoId: detalle.productoId,
+    //     movimientoId: nuevoMovimiento.getDataValue("movimientoId"),
+    //   });
+    // });
+    // El foreEach crea una funcion en cada elemento del arreglo mientras que el map retorna un arreglo con los resultados de la iteracion del arreglo original
+    let total = 0.0;
+    const movimientoDetalles = await Promise.all(
+      movimientoDetalle.map(
+        async ({
+          detalleMovimientoCantidad,
+          detalleMovimientoPrecio,
+          productoId,
+        }) => {
+          // en cada creacion modificar el total
+          total += detalleMovimientoCantidad * detalleMovimientoPrecio;
+          return await DetalleMovimiento.create(
+            {
+              detalleMovimientoCantidad,
+              detalleMovimientoPrecio,
+              productoId,
+              movimientoId: nuevoMovimiento.getDataValue("movimientoId"),
+            },
+            { transaction: transaccion }
+          );
+        }
+      )
+    );
+
+    nuevoMovimiento.setDataValue("movimientoTotal", total);
+
+    await nuevoMovimiento.save({ transaction: transaccion });
+
+    await transaccion.commit();
+
+    const rpta: TRespuesta = {
+      content: null,
+      message: "Movimiento creado exitosamente",
+      success: true,
+    };
+
+    return res.status(201).json(rpta);
+  } catch (error) {
+    await transaccion.rollback();
+
+    const rpta: TRespuesta = {
+      content: null,
+      message: "Error al crear el movimiento",
+      success: false,
+    };
+
+    return res.status(400).json(rpta);
+  }
+};
