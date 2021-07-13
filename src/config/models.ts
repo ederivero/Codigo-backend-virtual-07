@@ -168,7 +168,7 @@ const movimientoModel = () =>
         allowNull: false,
       },
       movimientoTotal: {
-        type: DataTypes.DECIMAL(5, 2),
+        type: DataTypes.DECIMAL(6, 2),
         field: "total",
         allowNull: false,
       },
