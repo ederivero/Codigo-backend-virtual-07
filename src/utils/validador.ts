@@ -86,12 +86,13 @@ export const isAdmin = async (
   next: NextFunction
 ) => {
   const administrador = await Tipo.findOne({
-    where: { tipoDescripcion: { [Op.like]: "%ADMINISTRADOR%" } },
+    where: {
+      tipoDescripcion: { [Op.like]: "%ADMINISTRADOR%" },
+      tipoId: req.user?.getDataValue("tipoId"),
+    },
   });
 
-  if (
-    req.user?.getDataValue("tipoId") === administrador?.getDataValue("tipoId")
-  ) {
+  if (administrador) {
     next();
   } else {
     const rpta: TRespuesta = {

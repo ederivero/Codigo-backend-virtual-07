@@ -86,39 +86,43 @@ export const crearMovimiento = async (req: RequestCustom, res: Response) => {
 
 export const listarMovimientos = async (req: RequestCustom, res: Response) => {
   // 127.0.0.1:8000/movimientos?pagina=2&porPagina=5
-  const { pagina, porPagina } = req.query;
+  let { pagina, porPagina } = req.query;
   // limit => cuantos elementos por pagina
   // offset => cuantos elementos se saltara
   // HELPER DE PAGINACION
-  if (pagina && porPagina) {
-    const offset = (+pagina - 1) * +porPagina;
-    const limit = +porPagina;
-
-    const [movimientos, total] = await Promise.all([
-      Movimiento.findAll({
-        limit,
-        offset,
-      }),
-      Movimiento.count(),
-    ]);
-
-    const itemsXPagina = +total >= +porPagina ? +porPagina : total;
-    const totalDePaginas = Math.ceil(+total / itemsXPagina);
-    const paginaPrevia = +pagina > 1 && +pagina <= total ? +pagina - 1 : null;
-    const paginaSiguiente =
-      total > 1 && +pagina < totalDePaginas ? +pagina + 1 : null;
-
-    const paginacionSerializer = {
-      porPagina: itemsXPagina,
-      total,
-      pagina,
-      paginaPrevia,
-      paginaSiguiente,
-      totalDePaginas,
-    };
-
-    return res
-      .status(200)
-      .json({ paginacion: paginacionSerializer, data: movimientos });
+  if (!pagina) {
+    pagina = "1";
   }
+  if (!porPagina) {
+    porPagina = "2";
+  }
+  const offset = (+pagina - 1) * +porPagina;
+  const limit = +porPagina;
+
+  const [movimientos, total] = await Promise.all([
+    Movimiento.findAll({
+      limit,
+      offset,
+    }),
+    Movimiento.count(),
+  ]);
+
+  const itemsXPagina = +total >= +porPagina ? +porPagina : total;
+  const totalDePaginas = Math.ceil(+total / itemsXPagina);
+  const paginaPrevia = +pagina > 1 && +pagina <= total ? +pagina - 1 : null;
+  const paginaSiguiente =
+    total > 1 && +pagina < totalDePaginas ? +pagina + 1 : null;
+
+  const paginacionSerializer = {
+    porPagina: itemsXPagina,
+    total,
+    pagina: +pagina,
+    paginaPrevia,
+    paginaSiguiente,
+    totalDePaginas,
+  };
+
+  return res
+    .status(200)
+    .json({ paginacion: paginacionSerializer, data: movimientos });
 };
