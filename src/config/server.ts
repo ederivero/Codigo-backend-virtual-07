@@ -46,7 +46,7 @@ export default class Server {
     this.app.get("/", (req: Request, res: Response) => {
       res.send("Bienvenido a la api de zapateria");
     });
-    process.env.NODE_ENV
+    process.env.NODE_ENV !== "production"
       ? (documentacion.host = `localhost:${this.port}`)
       : (documentacion.host = `zapateria-ts-eduardo.herokuapp.com`);
 
