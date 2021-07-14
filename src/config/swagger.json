@@ -5,7 +5,7 @@
     "title": "Zapateria-Express",
     "contact": {}
   },
-  "host": "127.0.0.1:8000",
+  "host": "",
   "basePath": "/",
   "securityDefinitions": {
     "JWT_token": {
