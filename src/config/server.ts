@@ -8,6 +8,8 @@ import conexion from "./sequelize";
 import { productoRouter } from "../routes/producto";
 import { imagenRouter } from "../routes/imagen";
 import { movimientoRouter } from "../routes/movimiento";
+import swaggerUI from "swagger-ui-express";
+import documentacion from "./swagger.json";
 
 require("dotenv").config();
 
@@ -45,6 +47,7 @@ export default class Server {
     this.app.get("/", (req: Request, res: Response) => {
       res.send("Bienvenido a la api de zapateria");
     });
+    this.app.use("/docs", swaggerUI.serve, swaggerUI.setup(documentacion));
     this.app.use(tipoRouter);
     this.app.use(accionRouter);
     this.app.use(usuarioRouter);
