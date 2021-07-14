@@ -2,7 +2,6 @@ import { Sequelize, Options } from "sequelize";
 require("dotenv").config();
 
 const opciones: Options = {
-  dialect: "postgres",
   dialectOptions: {
     ssl: {
       rejectUnauthorized: false,
