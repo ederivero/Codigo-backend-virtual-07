@@ -70,6 +70,7 @@ export const registro = async (
 
 export const login = async (req: Request, res: Response) => {
   const { email, password } = req.body;
+  console.log(email);
 
   const usuario = await Usuario.findOne({
     where: {
