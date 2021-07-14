@@ -47,8 +47,10 @@ export default class Server {
       res.send("Bienvenido a la api de zapateria");
     });
     process.env.NODE_ENV !== "production"
-      ? (documentacion.host = `localhost:${this.port}`)
-      : (documentacion.host = `zapateria-ts-eduardo.herokuapp.com`);
+      ? ((documentacion.host = `localhost:${this.port}`),
+        (documentacion.schemes = ["http"]))
+      : ((documentacion.host = `zapateria-ts-eduardo.herokuapp.com`),
+        (documentacion.schemes = ["https"]));
 
     this.app.use("/docs", swaggerUI.serve, swaggerUI.setup(documentacion));
 
@@ -63,8 +65,6 @@ export default class Server {
   start() {
     this.app.listen(this.port, async () => {
       console.log("Servidor corriendo exitosamente");
-      console.log(process.env.NODE_ENV);
-
       try {
         // el alter a diferencia del force lo que realizara sera que si una columna o varias es modificada y si es que tiene informacion es aceptable en la nueva variacion o si es que no tuviese informacion para casos de eliminacion de columnas
         // { alter: true }
