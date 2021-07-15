@@ -1,5 +1,5 @@
 import { NextFunction, Router, Request, Response } from "express";
-import { subirImagen } from "../controllers/imagen";
+import { eliminarArchivo, subirImagen } from "../controllers/imagen";
 
 import Multer from "multer";
 const multer = Multer({
@@ -29,3 +29,5 @@ imagenRouter.post(
   },
   subirImagen
 );
+
+imagenRouter.delete("/eliminarImagen", eliminarArchivo);

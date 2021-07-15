@@ -1,6 +1,9 @@
 import { Request, Response } from "express";
 import { Imagen } from "../config/models";
-import { subirArchivoUtil } from "../utils/manejoArchivoFirebase";
+import {
+  eliminarArchivoUtitl,
+  subirArchivoUtil,
+} from "../utils/manejoArchivoFirebase";
 import { TRespuesta } from "./dto.response";
 
 export const subirImagen = async (req: Request, res: Response) => {
@@ -52,12 +55,22 @@ export const subirImagen = async (req: Request, res: Response) => {
       return res.status(200).json(rpta);
     } catch (error) {
       const rpta: TRespuesta = {
-        content: null,
+        content: error,
         message: "error al crear la imagen",
         success: false,
       };
 
       return res.status(400).json(rpta);
     }
+  }
+};
+
+export const eliminarArchivo = async (req: Request, res: Response) => {
+  const { carpeta, archivo } = req.body;
+  try {
+    await eliminarArchivoUtitl(carpeta, archivo);
+    return res.json({ success: true });
+  } catch (error) {
+    return res.json({ success: false });
   }
 };

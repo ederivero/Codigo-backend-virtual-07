@@ -1,10 +1,16 @@
 import { Storage } from "@google-cloud/storage";
 import { Express } from "express";
 
+require("dotenv").config();
+
 // Creao la instancia de la clase Storage con la configuracion de las credenciales y el id del proyecto
 const storage = new Storage({
   projectId: "zapateria-codigo-eduardo",
-  keyFilename: "./credenciales_firebase.json",
+  credentials: {
+    client_email: process.env.CLIENT_EMAIL_FIREBASE,
+    private_key: process.env.PRIVATE_KEY_FIREBASE?.replace(/\\n/gm, "\n"),
+  },
+  // keyFilename: "./credenciales_firebase.json",
 });
 // Enlazo mi bucket (donde se almacenaran todas las imagenes)
 // se copia el link que muestra el bucket PERO sin el protocolo gs ni el / del final
