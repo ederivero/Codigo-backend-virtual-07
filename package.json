@@ -1,0 +1,20 @@
+{
+  "name": "cafeteria-mongoose",
+  "version": "1.0.0",
+  "description": "Proyecto en no-sql de una cafeteria",
+  "main": "index.js",
+  "repository": "https://github.com/ederivero/Codigo-backend-virtual-07.git",
+  "author": "Eduardo Ramiro de Rivero Manrique <ederiveroman@gmail.com>",
+  "license": "MIT",
+  "private": false,
+  "devDependencies": {
+    "@types/express": "^4.17.13",
+    "@types/mongoose": "^5.11.97",
+    "ts-node": "^10.1.0",
+    "typescript": "^4.3.5"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "mongoose": "^5.13.2"
+  }
+}
