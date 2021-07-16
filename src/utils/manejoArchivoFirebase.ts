@@ -79,15 +79,17 @@ export const eliminarArchivoUtitl = async (
   carpeta: string,
   archivo: string
 ) => {
-  try {
-    const respuesta = await bucket
-      .file(`${carpeta}/${archivo}`)
-      .delete({ ignoreNotFound: true });
+  return new Promise(async (resolve, reject) => {
+    try {
+      const respuesta = await bucket
+        .file(`${carpeta}/${archivo}`)
+        .delete({ ignoreNotFound: true });
 
-    console.log(respuesta);
+      console.log(respuesta);
 
-    return respuesta;
-  } catch (error) {
-    return error;
-  }
+      resolve(respuesta);
+    } catch (error) {
+      reject(error);
+    }
+  });
 };

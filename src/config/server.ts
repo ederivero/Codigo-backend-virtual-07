@@ -19,8 +19,8 @@ export default class Server {
   constructor() {
     this.app = express();
     this.port = process.env.PORT || "8000";
-    this.bodyParser();
     this.CORS();
+    this.bodyParser();
     this.rutas();
   }
 
@@ -47,7 +47,7 @@ export default class Server {
       res.send("Bienvenido a la api de zapateria");
     });
     process.env.NODE_ENV !== "production"
-      ? ((documentacion.host = `localhost:${this.port}`),
+      ? ((documentacion.host = `127.0.0.1:${this.port}`),
         (documentacion.schemes = ["http"]))
       : ((documentacion.host = `zapateria-ts-eduardo.herokuapp.com`),
         (documentacion.schemes = ["https"]));

@@ -243,6 +243,46 @@
             "headers": {}
           }
         }
+      },
+      "get": {
+        "summary": "/productos",
+        "tags": [
+          "Producto"
+        ],
+        "parameters": [
+          {
+            "name": "pagina",
+            "in": "query",
+            "required": true,
+            "type": "integer",
+            "format": "int32",
+            "description": ""
+          },
+          {
+            "name": "porPagina",
+            "in": "query",
+            "required": true,
+            "type": "integer",
+            "format": "int32",
+            "description": ""
+          }
+        ],
+        "operationId": "Get/productos",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "security": [
+          {
+            "JWT_token": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        }
       }
     },
     "/subirImagen": {
@@ -273,6 +313,39 @@
             "required": true,
             "type": "file",
             "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/eliminarImagen": {
+      "delete": {
+        "summary": "/eliminarImagen",
+        "tags": [
+          "Imagen"
+        ],
+        "operationId": "/eliminarImagen",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Body",
+            "in": "body",
+            "required": true,
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/~1imagerequest"
+            }
           }
         ],
         "responses": {
@@ -318,7 +391,7 @@
         }
       },
       "get": {
-        "summary": "/movimientos?pagina=1&porPagina=2",
+        "summary": "/movimientos",
         "tags": [
           "Movimiento"
         ],
@@ -330,6 +403,14 @@
         "parameters": [
           {
             "name": "pagina",
+            "in": "query",
+            "required": true,
+            "type": "integer",
+            "format": "int32",
+            "description": ""
+          },
+          {
+            "name": "porPagina",
             "in": "query",
             "required": true,
             "type": "integer",
@@ -469,6 +550,26 @@
         "productoNombre",
         "productoPrecio",
         "productoDescripcion"
+      ]
+    },
+    "/imagerequest": {
+      "title": "/imagerequest",
+      "example": {
+        "carpeta": "usuario",
+        "archivo": "00001.jpg"
+      },
+      "type": "object",
+      "properties": {
+        "carpeta": {
+          "type": "string"
+        },
+        "archivo": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "carpeta",
+        "archivo"
       ]
     },
     "/movimientosrequest": {
