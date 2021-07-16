@@ -2,6 +2,7 @@
 import express from "express";
 import { json, Express, Request, Response, NextFunction } from "express";
 import { connect } from "mongoose";
+import { productoRouter } from "../producto/producto.routes";
 require("dotenv").config();
 
 export default class Server {
@@ -26,6 +27,7 @@ export default class Server {
         success: true,
       });
     });
+    this.app.use("/api", productoRouter);
   }
 
   CORS() {
