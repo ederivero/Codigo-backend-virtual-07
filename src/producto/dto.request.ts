@@ -1,17 +1,12 @@
 import { Request, Response, NextFunction } from "express";
 
-enum tipos {
-  LATTES = "LATTES",
-  COMIDA = "COMIDA",
-  MERCHANDISING = "MERCHANDISING",
-  FRAPPS = "FRAPPS",
-}
+const TIPOS = ["LATTES", "COMIDA", "MERCHANDISING", "FRAPPS"];
 
 export type TActualizarProducto = {
   productoNombre: string;
   productoPrecio: number;
   productoImagen: string;
-  productoTipo: tipos;
+  productoTipo: string;
 };
 
 export const actualizarProductoDto = (
@@ -21,9 +16,7 @@ export const actualizarProductoDto = (
 ) => {
   const data: TActualizarProducto = req.body;
 
-  const tipos = ["LATTES", "COMIDA", "MERCHANDISING", "FRAPPS"];
-
-  const resultadoTipo = tipos.filter((tipo) => tipo === data.productoTipo)[0];
+  const resultadoTipo = TIPOS.filter((tipo) => tipo === data.productoTipo)[0];
 
   if (
     data.productoNombre &&
