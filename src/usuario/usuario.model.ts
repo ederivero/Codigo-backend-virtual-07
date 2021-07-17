@@ -25,6 +25,7 @@ const usuarioSchema = new Schema(
     usuarioApellido: {
       type: Schema.Types.String,
       alias: "apellido",
+      required: true,
     },
     usuarioTelefono: {
       type: Schema.Types.String,
