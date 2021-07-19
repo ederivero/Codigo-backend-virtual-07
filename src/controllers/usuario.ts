@@ -63,6 +63,7 @@ export const registro = async (
       message: "Error al crear el usuario",
       success: false,
     };
+    console.log(error);
 
     return res.status(400).json(rpta);
   }
