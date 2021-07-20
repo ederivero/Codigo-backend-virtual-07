@@ -52,6 +52,7 @@ export default class Server {
           useUnifiedTopology: true, // usar el nuevo Current Server Discovery
           serverSelectionTimeoutMS: 5000, // modificar el tiempo de espera de conexion al servidor de bd
           useFindAndModify: false, // cuando queremos usar findOneAndUpdate o findOneAndDelete tenemos que indicar esta opcion ya que proximamente sera deprecado
+          useCreateIndex: true,
         });
 
         console.log("Base de datos sincronizada correctamente ✨");

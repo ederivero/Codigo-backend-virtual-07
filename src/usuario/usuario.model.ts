@@ -16,6 +16,8 @@ const usuarioSchema = new Schema(
       type: Schema.Types.String,
       alias: "correo",
       required: true,
+      index: true,
+      unique: true,
     },
     usuarioNombre: {
       type: Schema.Types.String,
@@ -34,6 +36,8 @@ const usuarioSchema = new Schema(
     usuarioDni: {
       type: Schema.Types.String,
       alias: "dni",
+      index: true,
+      unique: true,
     },
     usuarioDireccion: {
       type: direccionSchema,
