@@ -43,7 +43,6 @@ const usuarioSchema = new Schema(
       type: Schema.Types.String,
       set: (valor: string) => hashSync(valor, 10),
       alias: "password",
-      required: true,
     },
     usuarioTipo: {
       type: Schema.Types.String,
