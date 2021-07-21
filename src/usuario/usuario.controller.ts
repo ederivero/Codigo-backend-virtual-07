@@ -24,7 +24,6 @@ export const registro = async (req: Request, res: Response) => {
       message: "error al guardar el usuario",
     });
   }
-  // guardar el usuario en la bd y devolver todo el usuario menos la password
 };
 
 export const login = async (req: Request, res: Response) => {
