@@ -1,0 +1,61 @@
+[{
+  "_id": {
+    "$oid": "60f0f4bfeec38a4a2072000a"
+  },
+  "productoImagen": "nofoto.jpg",
+  "detalles": [],
+  "productoPrecio": {
+    "$numberDecimal": "15.8"
+  },
+  "productoNombre": "Volcan misti",
+  "productoTipo": "MERCHANDISING",
+  "__version": 0
+},{
+  "_id": {
+    "$oid": "60f7647f2d315e43a0c8a1cf"
+  },
+  "productoImagen": "media\\iMVXU.jpg",
+  "detalles": [],
+  "productoNombre": "Cafe Espresso",
+  "productoPrecio": {
+    "$numberDecimal": "7.5"
+  },
+  "productoTipo": "LATTES",
+  "__version": 0
+},{
+  "_id": {
+    "$oid": "60f76a6a6d972b5df07b620b"
+  },
+  "productoImagen": "media\\iMVXU.jpg",
+  "detalles": [],
+  "productoNombre": "Cafe Macchiato",
+  "productoPrecio": {
+    "$numberDecimal": "14.2"
+  },
+  "productoTipo": "LATTES",
+  "__version": 0
+},{
+  "_id": {
+    "$oid": "60f76a786d972b5df07b620d"
+  },
+  "productoImagen": "media\\iMVXU.jpg",
+  "detalles": [],
+  "productoNombre": "Cafe Cappuccino",
+  "productoPrecio": {
+    "$numberDecimal": "7.5"
+  },
+  "productoTipo": "LATTES",
+  "__version": 0
+},{
+  "_id": {
+    "$oid": "60f76a8f6d972b5df07b620f"
+  },
+  "productoImagen": "media\\iMVXU.jpg",
+  "detalles": [],
+  "productoNombre": "Frappe Mocca",
+  "productoPrecio": {
+    "$numberDecimal": "19.5"
+  },
+  "productoTipo": "FRAPPS",
+  "__version": 0
+}]
