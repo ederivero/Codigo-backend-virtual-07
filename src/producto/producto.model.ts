@@ -1,6 +1,14 @@
 import { model, Schema } from "mongoose";
 
-const productoSchema = new Schema(
+interface Producto {
+  productoNombre: string;
+  productoPrecio: number;
+  productoImagen?: string;
+  productoTipo?: string;
+  detalles?: Array<string>;
+}
+
+const productoSchema = new Schema<Producto>(
   {
     productoNombre: {
       type: Schema.Types.String,
@@ -32,4 +40,4 @@ const productoSchema = new Schema(
   }
 );
 
-export const Producto = model("productos", productoSchema);
+export const Producto = model<Producto>("productos", productoSchema);
