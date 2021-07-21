@@ -1,7 +1,8 @@
 import { Request, Response } from "express";
 import { RequestUser } from "../utils/validador";
+import { Movimiento } from "./movimiento.model";
 
-export const crearMovimiento = (req: RequestUser, res: Response) => {
+export const crearMovimiento = async (req: RequestUser, res: Response) => {
   //   const token = "asdasd.asdasda.asdasd"; // sacare el vendedor_id
   //   const body = {
   //     fecha: "2021-07-20 19:45",
@@ -23,9 +24,12 @@ export const crearMovimiento = (req: RequestUser, res: Response) => {
   //     ],
   //   };
   console.log(req.user);
-
   const { movimientoFecha, movimientoTipo, movimientoDetalles, usuarioId } =
     req.body;
+
+  movimientoDetalles.forEach(
+    (detalle: { detalleCantidad: number; detalleProducto: string }) => {}
+  );
   return res.json({
     success: true,
   });

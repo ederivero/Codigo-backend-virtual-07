@@ -5,15 +5,16 @@ import { Usuario } from "./usuario.model";
 
 export const registro = async (req: Request, res: Response) => {
   // crear el dto y validar los campos necesarios
-  console.log(req.body);
   try {
     const nuevoUsuario = await Usuario.create(req.body);
 
-    delete nuevoUsuario._doc["usuarioPassword"];
+    const data = nuevoUsuario.toJSON();
+
+    delete data["usuarioPassword"];
 
     return res.status(201).json({
       success: true,
-      content: nuevoUsuario,
+      content: data,
       message: "Usuario creado exitosamente",
     });
   } catch (error) {
@@ -41,7 +42,7 @@ export const login = async (req: Request, res: Response) => {
     });
   }
 
-  const resultado = compareSync(password, usuario.usuarioPassword);
+  const resultado = compareSync(password, usuario.usuarioPassword ?? "");
 
   if (resultado) {
     const payload = {
