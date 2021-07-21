@@ -5,6 +5,7 @@ import { connect } from "mongoose";
 import { imagenRouter } from "../imagen/imagen.routes";
 import { productoRouter } from "../producto/producto.routes";
 import { usuarioRouter } from "../usuario/usuario.routes";
+import { movimientoRouter } from "../movimiento/movimiento.routes";
 require("dotenv").config();
 
 export default class Server {
@@ -33,7 +34,13 @@ export default class Server {
     // console.log(__dirname.slice(0, 78));
     const ubicacionProyecto = __dirname.slice(0, __dirname.search("src"));
     this.app.use("/assets", express.static(ubicacionProyecto + "/media"));
-    this.app.use("/api", productoRouter, usuarioRouter, imagenRouter);
+    this.app.use(
+      "/api",
+      productoRouter,
+      usuarioRouter,
+      imagenRouter,
+      movimientoRouter
+    );
   }
 
   CORS() {
