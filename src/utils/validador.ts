@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from "express";
 import { JwtPayload, verify } from "jsonwebtoken";
-import { Document } from "mongoose";
 import { Usuario } from "../usuario/usuario.model";
 
 export interface RequestUser extends Request {
@@ -38,7 +37,7 @@ export const authValidator = async (
   if (typeof resultado === "object") {
     const id = resultado.usuarioId;
     // https://mongoosejs.com/docs/api.html#query_Query-select
-    const usuario: Document = await Usuario.findById(id, "-usuarioPassword");
+    const usuario = await Usuario.findById(id, "-usuarioPassword");
     req.user = usuario;
     next();
   } else {
