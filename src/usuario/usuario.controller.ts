@@ -32,7 +32,7 @@ export const login = async (req: Request, res: Response) => {
     { usuarioCorreo: correo },
     "usuarioPassword usuarioTipo"
   );
-  console.log(usuario);
+  // console.log(usuario);
   if (!usuario || usuario.usuarioTipo === "CLIENTE") {
     return res.status(404).json({
       success: false,

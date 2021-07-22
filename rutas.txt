@@ -1,12 +1,13 @@
-POST /registro
-POST /login
+✔POST /registro 
+✔POST /login 
 POST /cambiarPassword => enviar una token al correo para resetear la password | usaremos handlebars
 
-POST /productos
-GET /productos PAGINATED
-PUT /productos
-DELETE /productos
+✔POST /productos
+✔GET /productos PAGINATED
+✔PUT /productos
+✔DELETE /productos
 
-POST /movimientos
+✔POST /movimientos
+GET /movimientos
 
 POST /pago
