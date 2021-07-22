@@ -2,6 +2,9 @@ import { Request, Response } from "express";
 import { Producto } from "../producto/producto.model";
 import { RequestUser } from "../utils/validador";
 import { IMovimiento, Movimiento } from "./movimiento.model";
+import { configure } from "mercadopago";
+import { CreatePreferencePayload } from "mercadopago/models/preferences/create-payload.model";
+require("dotenv").config();
 
 // https://www.typescriptlang.org/docs/handbook/utility-types.html
 interface ILMovimiento extends Omit<IMovimiento, "vendedorId"> {}
@@ -59,7 +62,63 @@ export const crearMovimiento = async (req: RequestUser, res: Response) => {
 export const crearPreferencia = async (req: Request, res: Response) => {
   // solamente un PERSONAL puede crear una preferencia ✔
   // de acuerdo al id del movimiento por el body buscar en la bd si existe sino no proceder
+  // access_token => esta token se creara POR CADA NEGOCIO tendra su token y esto serviria a MP para saber a que negocio tiene que a fin de periodo depositar el monto cobrado
+  // integrator_id => identificacion del desarrollador que efectuo la integracion de la pasarela de pagos para reconocimientos y pagos adicionales
+  configure({
+    access_token: String(process.env.ACCESS_TOKEN_PR),
+    integrator_id: String(process.env.INTEGRATOR_ID_PR),
+  });
 
+  const preferencia: CreatePreferencePayload = {
+    auto_return: "approved",
+    back_urls: {
+      success: "http://127.0.0.1:8000/success",
+      failure: "http://127.0.0.1:8000/failure",
+      pending: "http://127.0.0.1:8000/pending",
+    },
+    items: [
+      {
+        id: "123123",
+        title: "zapatito de bebe",
+        description: "Zapato de moda primavera otoño 2021",
+        picture_url: "http://imagen.com",
+        category_id: "1",
+        quantity: 1,
+        currency_id: "PEN",
+        unit_price: 40.8,
+      },
+    ],
+    payer: {
+      name: "Eduardo",
+      surname: "De Rivero",
+      email: "test_user_46542185@testuser.com",
+      phone: {
+        area_code: "51",
+        number: "974207075",
+      },
+      identification: {
+        type: "DNI",
+        number: "22334445",
+      },
+      address: {
+        zip_code: "04002",
+        street_name: "Av Primavera",
+        street_number: "1150",
+      },
+      date_created: "2021-07-21",
+    },
+    payment_methods: {
+      excluded_payment_methods: [
+        {
+          id: "master",
+        },
+        {
+          id: "debvisa",
+        },
+      ],
+      installments: 5,
+    },
+  };
   const { movimientoId } = req.body;
   try {
     const movimiento = await Movimiento.findById(movimientoId);
