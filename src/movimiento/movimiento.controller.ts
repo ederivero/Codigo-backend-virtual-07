@@ -73,7 +73,7 @@ export const crearPreferencia = async (req: Request, res: Response) => {
     integrator_id: String(process.env.INTEGRATOR_ID_MP),
   });
 
-  const payload: CreatePreferencePayload = {
+  const payload: any = {
     auto_return: "approved",
     notification_url: process.env.NOTIFICATION_URL,
     back_urls: {
