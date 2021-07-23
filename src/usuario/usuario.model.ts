@@ -4,7 +4,7 @@ import { hashSync } from "bcrypt";
 interface Direccion {
   zip?: string;
   calle?: string;
-  numero?: string;
+  numero?: number;
 }
 interface Usuario {
   usuarioCorreo: string;
