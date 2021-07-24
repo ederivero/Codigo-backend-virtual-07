@@ -23,6 +23,12 @@ export const crearMovimiento = async (req: RequestUser, res: Response) => {
     usuarioId,
   }: ILMovimiento = req.body;
   try {
+    // validar si el usuario existe
+    const usuario = await Usuario.findById(usuarioId);
+    if (!usuario) {
+      throw new Error("El usuario no existe");
+    }
+
     await Promise.all(
       movimientoDetalles.map(async (detalle) => {
         console.log(detalle.productoId);
@@ -203,7 +209,12 @@ export const crearPreferencia = async (req: Request, res: Response) => {
 };
 
 export const mpEventos = (req: Request, res: Response) => {
+  console.log("----------------------------------------");
+  console.log("BODY:");
   console.log(req.body);
+  console.log("----------------------------------------");
+  console.log("QUERY PARAMS:");
   console.log(req.query);
+
   return res.status(200).json({});
 };
