@@ -1,0 +1,145 @@
+{
+    "additional_info": {
+        "authentication_code": null,
+        "available_balance": null,
+        "ip_address": "201.230.200.72",
+        "items": [
+            {
+                "category_id": "FRAPPS",
+                "description": null,
+                "id": "60fb4db30b955f0015071400",
+                "picture_url": "cafeteria-ts-eduardo.herokuapp.commedia/nyPAl.jpg",
+                "quantity": "2",
+                "title": "Frappe Mocca",
+                "unit_price": "23.3"
+            },
+            {
+                "category_id": "FRAPPS",
+                "description": null,
+                "id": "60fb4dc90b955f0015071402",
+                "picture_url": "cafeteria-ts-eduardo.herokuapp.commedia/nyPAl.jpg",
+                "quantity": "1",
+                "title": "Chocolate Espresso",
+                "unit_price": "7.4"
+            }
+        ],
+        "nsu_processadora": null,
+        "payer": {
+            "address": {
+                "street_name": "Av Calle",
+                "street_number": "123",
+                "zip_code": "07021"
+            },
+            "first_name": "RUBEN EDUARDO",
+            "last_name": "QUIROZ BARRIONUEVO",
+            "phone": {
+                "area_code": "51",
+                "number": "999999999"
+            }
+        }
+    },
+    "authorization_code": "301299",
+    "binary_mode": false,
+    "brand_id": null,
+    "call_for_authorize_id": null,
+    "captured": true,
+    "card": {
+        "cardholder": {
+            "identification": {
+                "number": "73500746",
+                "type": "DNI"
+            },
+            "name": "APRO"
+        },
+        "date_created": "2021-07-23T19:43:09.000-04:00",
+        "date_last_updated": "2021-07-23T19:43:09.000-04:00",
+        "expiration_month": 11,
+        "expiration_year": 2025,
+        "first_six_digits": "400917",
+        "id": null,
+        "last_four_digits": "6176"
+    },
+    "charges_details": [],
+    "collector_id": 677408439,
+    "corporation_id": null,
+    "counter_currency": null,
+    "coupon_amount": 0,
+    "currency_id": "PEN",
+    "date_approved": "2021-07-23T19:43:10.000-04:00",
+    "date_created": "2021-07-23T19:43:09.000-04:00",
+    "date_last_updated": "2021-07-23T19:43:10.000-04:00",
+    "date_of_expiration": null,
+    "deduction_schema": null,
+    "description": "Frappe Mocca",
+    "differential_pricing_id": null,
+    "external_reference": null,
+    "fee_details": [
+        {
+            "amount": 3.72,
+            "fee_payer": "collector",
+            "type": "mercadopago_fee"
+        }
+    ],
+    "id": 16008229375,
+    "installments": 1,
+    "integrator_id": "dev_24c65fb163bf11ea96500242ac130004",
+    "issuer_id": "1056",
+    "live_mode": true,
+    "marketplace_owner": null,
+    "merchant_account_id": null,
+    "merchant_number": null,
+    "metadata": {},
+    "money_release_date": "2021-07-23T19:43:10.000-04:00",
+    "money_release_schema": null,
+    "notification_url": "https://cafeteria-ts-eduardo.herokuapp.com/api/mercadopago-ipn",
+    "operation_type": "regular_payment",
+    "order": {
+        "id": "2995740294",
+        "type": "mercadopago"
+    },
+    "payer": {
+        "email": "test_user_46542185@testuser.com",
+        "entity_type": null,
+        "first_name": null,
+        "id": "681051270",
+        "identification": {
+            "number": "20555212390",
+            "type": "RUC"
+        },
+        "last_name": null,
+        "operator_id": null,
+        "phone": {
+            "area_code": null,
+            "extension": null,
+            "number": null
+        },
+        "type": null
+    },
+    "payment_method_id": "visa",
+    "payment_type_id": "credit_card",
+    "platform_id": null,
+    "point_of_interaction": {},
+    "pos_id": null,
+    "processing_mode": "aggregator",
+    "refunds": [],
+    "shipping_amount": 0,
+    "sponsor_id": null,
+    "statement_descriptor": "Mercadopago*fake",
+    "status": "approved",
+    "status_detail": "accredited",
+    "store_id": null,
+    "taxes_amount": 0,
+    "transaction_amount": 54,
+    "transaction_amount_refunded": 0,
+    "transaction_details": {
+        "acquirer_reference": null,
+        "external_resource_url": null,
+        "financial_institution": null,
+        "installment_amount": 54,
+        "net_received_amount": 50.28,
+        "overpaid_amount": 0,
+        "payable_deferral_period": null,
+        "payment_method_reference_id": null,
+        "total_paid_amount": 54
+    }
+}

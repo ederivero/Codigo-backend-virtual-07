@@ -8,7 +8,7 @@ import {
   PreferenceItem,
 } from "mercadopago/models/preferences/create-payload.model";
 import { Usuario } from "../usuario/usuario.model";
-import fetch from "node-fetch";
+
 require("dotenv").config();
 
 // https://www.typescriptlang.org/docs/handbook/utility-types.html
@@ -49,6 +49,7 @@ export const crearMovimiento = async (req: RequestUser, res: Response) => {
       movimientoDetalles,
       usuarioId,
       vendedorId: vendedor,
+      movimientoPasarela: {},
     };
 
     const nuevoMovimiento = await Movimiento.create(movimiento);
@@ -190,6 +191,10 @@ export const crearPreferencia = async (req: Request, res: Response) => {
 
     const preferencia = await preferences.create(payload);
 
+    movimiento.movimientoPasarela.collectorId =
+      preferencia.response.collector_id;
+    await movimiento.save();
+
     console.log(movimiento);
     console.log(preferencia);
 
@@ -235,16 +240,26 @@ export const mpEventos = async (req: Request, res: Response) => {
     });
     console.log("PAGO DEL PAYMENT");
 
-    console.log(pago);
+    const {
+      payment_method_id,
+      payment_type_id,
+      status,
+      status_detail,
+      collector_id,
+    } = pago.body;
 
-    const response = await fetch(
-      `https://api.mercadopago.com/v1/payments/${id}`,
-      { headers: { Authorization: `Bearer ${process.env.ACCESS_TOKEN_MP}` } }
-    );
-    const json = await response.json();
-    console.log("PAGO DEL FETCH");
+    if (payment_type_id === "credit_card" || payment_type_id === "debit_card") {
+      const { first_six_digits } = pago.body.card;
+    }
 
-    console.log(json.status);
+    // const response = await fetch(
+    //   `https://api.mercadopago.com/v1/payments/${id}`,
+    //   { headers: { Authorization: `Bearer ${process.env.ACCESS_TOKEN_MP}` } }
+    // );
+    // const json = await response.json();
+    // console.log("PAGO DEL FETCH");
+
+    // console.log(json.status);
     console.log("=========================================");
   }
 
