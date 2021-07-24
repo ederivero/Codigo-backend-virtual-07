@@ -3,12 +3,16 @@ import { authValidator, personalValidator } from "../utils/validador";
 import {
   crearMovimiento,
   crearPreferencia,
+  listarMovimientos,
   mpEventos,
 } from "./movimiento.controller";
 
 export const movimientoRouter = Router();
 
-movimientoRouter.route("/movimientos").post(authValidator, crearMovimiento);
+movimientoRouter
+  .route("/movimientos")
+  .post(authValidator, crearMovimiento)
+  .get(authValidator, listarMovimientos);
 
 movimientoRouter.post(
   "/venta",

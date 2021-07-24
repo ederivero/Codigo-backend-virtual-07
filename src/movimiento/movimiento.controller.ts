@@ -278,3 +278,12 @@ export const mpEventos = async (req: Request, res: Response) => {
 
   return res.status(200).json({});
 };
+
+export const listarMovimientos = async (req: Request, res: Response) => {
+  const movimientos = await Movimiento.find();
+  return res.json({
+    success: true,
+    content: movimientos,
+    message: null,
+  });
+};
