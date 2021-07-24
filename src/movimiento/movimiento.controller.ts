@@ -248,8 +248,21 @@ export const mpEventos = async (req: Request, res: Response) => {
       collector_id,
     } = pago.body;
 
+    const movimiento = await Movimiento.findOne({
+      "movimientoPasarela.collectorId": collector_id,
+    });
+    let first_six_digits;
     if (payment_type_id === "credit_card" || payment_type_id === "debit_card") {
-      const { first_six_digits } = pago.body.card;
+      first_six_digits = pago.body.card.first_six_digits;
+    }
+
+    if (movimiento) {
+      movimiento.movimientoPasarela.paymentMethodId = payment_method_id;
+      movimiento.movimientoPasarela.paymentTypeId = payment_type_id;
+      movimiento.movimientoPasarela.status = status;
+      movimiento.movimientoPasarela.statusDetail = status_detail;
+      movimiento.movimientoPasarela.firstSixDigits = first_six_digits;
+      await movimiento.save();
     }
 
     // const response = await fetch(
