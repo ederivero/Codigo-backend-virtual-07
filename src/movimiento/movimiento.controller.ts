@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { Producto } from "../producto/producto.model";
 import { RequestUser } from "../utils/validador";
 import { IMovimiento, Movimiento } from "./movimiento.model";
-import { configure, preferences } from "mercadopago";
+import { configure, preferences, payment } from "mercadopago";
 import {
   CreatePreferencePayload,
   PreferenceItem,
@@ -228,11 +228,22 @@ export const mpEventos = async (req: Request, res: Response) => {
   if (topic === "payment") {
     console.log("=========================================");
     console.log("Fue un pago");
+    console.log(id);
+
+    const pago = await payment.get(Number(id), {
+      headers: { Authorization: process.env.ACCESS_TOKEN_MP ?? "" },
+    });
+    console.log("PAGO DEL PAYMENT");
+
+    console.log(pago);
+
     const response = await fetch(
       `https://api.mercadopago.com/v1/payments/${id}`,
       { headers: { Authorization: process.env.ACCESS_TOKEN_MP ?? "" } }
     );
     const json = await response.json();
+    console.log("PAGO DEL FETCH");
+
     console.log(json.status);
     console.log("=========================================");
   }
