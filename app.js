@@ -83,7 +83,7 @@ app.get("/detail", async function (req, res) {
     auto_return: "approved",
   };
   const resultado = await mercadopago.preferences.create(preferencia);
-
+  console.log(items[0].picture_url);
   console.log(resultado);
   res.render("detail", {
     ...req.query,
