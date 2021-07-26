@@ -60,8 +60,10 @@ app.get("/detail", async function (req, res) {
     {
       id: "1234",
       title: req.query.title,
-      description: "“Dispositivo móvil de Tienda e-commerce",
-      picture_url: req.get("host") + req.query.img.slice(1),
+      description: "Dispositivo movil de Tienda e-commerce",
+      picture_url:
+        req.protocol + "://" + req.get("host") + req.query.img.slice(1),
+      // https://miapp.herokuapp.com/assets/img01.jpg
       //   picture_url: req.get("host") + req.query.img.replace(".", ""),
       quantity: +req.query.unit,
       unit_price: Number(req.query.price),
