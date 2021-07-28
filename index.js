@@ -11,7 +11,7 @@ const estado = document.getElementById("estado");
 
 function timejs(number, index) {
   return [
-    ["justo ahora", "en un rato"],
+    ["justo ahora", "justo ahora"],
     ["hace %s segundos", "en %s segundos"],
     ["hace 1 minuto", "en 1 minuto"],
     ["hace %s minutos", "en %s minutos"],
