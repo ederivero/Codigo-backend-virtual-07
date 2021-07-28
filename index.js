@@ -1,4 +1,4 @@
-const socket = io("http://127.0.0.1:8000");
+const socket = io("https://chat-socket-eduardo.herokuapp.com/");
 const btnIngresar = document.getElementById("btnIngresar");
 const username = document.getElementById("username");
 const usuarios_conectados = document.getElementById("usuarios-conectados");
