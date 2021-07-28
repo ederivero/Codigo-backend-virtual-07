@@ -26,7 +26,7 @@ export default class Server {
     this.port = process.env.PORT || 8000;
     this.httpServer = createServer(this.app);
     this.io = new SocketIO(this.httpServer, {
-      cors: { origin: ["http://127.0.0.1:5502", "http://localhost:5502"] },
+      cors: { origin: "*" },
     });
     this.rutas();
     this.escucharSockets();
