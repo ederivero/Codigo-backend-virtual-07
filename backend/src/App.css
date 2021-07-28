@@ -1,0 +1,195 @@
+.boton-submit{
+  width: 100%;
+  height: 40px;
+  background-color: #7A4CA5;
+  margin-bottom: 15px;
+  margin-top: 20px;
+  border-radius: 5px;
+  border: none;
+  color: white;
+  font-weight: 500;
+}
+.boton-redireccionar{
+  width: 100%;
+  height: 40px;
+  background-color: #FFB55E;
+  border-radius: 5px;
+  border: none;
+  color: white;
+  font-weight: 500;
+}
+.contenedor-general{
+  height: 100vh;
+  background-color: #7A4CA5;
+  display: flex;
+  align-items: center;
+}
+.contenedor-canales{
+  height: 100vh;
+}
+.canales-lista-canales{
+  height: 100%;
+  width: 350px;
+  background-color: #7A4CA5;
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+.canales-chat-canales{
+  margin-left: 350px;
+  height: 100%;
+}
+/* Chat principal */
+.contenedor-chat-principal{
+  padding: 50px 50px 0px 50px;
+  display: flex;
+}
+.contenedor-chat-principal .canal-img{
+  height: 55vh;
+  width: 60%;
+  border-radius: 10px;
+  background-image: url(./Media/cinema.jpg);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+.contenedor-chat-principal .chat{
+  background-color: #F2F2F2;
+  border-radius: 10px;
+  margin-left: 30px;
+  height: 55vh;
+  width: 40%;
+}
+.contenedor-chat-principal .chat-mensajes{
+  margin: 20px;
+}
+.contenedor-chat-principal .area-mensajes{
+  height: 44vh;
+  overflow-y: auto;
+}
+.contenedor-chat-principal .area-mensajes button{
+  background: rgb(0, 0, 0, 0.4);
+  border: none;
+  height: 40px;
+  width: 100%;
+  border-radius: 5px;
+}
+.contenedor-chat-principal .input-mensajes{
+  background-color: white;
+  height: 40px;
+  width: 100%;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  bottom: 0px;
+  left: 0px;
+}
+.input-mensajes input{
+  border: none;
+  height: 90%;
+  width: 80%;
+}
+.input-mensajes input:active{
+  border: none;
+}
+.input-mensajes input:focus{
+  border: none;
+  outline: none;
+}
+.input-mensajes i{
+  font-size: 1.2em;
+  color: rgb(78, 77, 77);
+}
+.canales-disponibles{
+  padding: 50px 50px 0px 50px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.canales-disponibles div{
+  width: 30%;
+  height: 100px;
+  margin-left: 5px;
+  border-radius: 10px;
+  background-image: url(./Media/music.jpg);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: 1s;
+}
+.canales-disponibles div:hover{
+  transform: scale(1.1);
+}
+.canales-disponibles p{
+  color: white;
+  font-weight: 600;
+  text-shadow: 5px 5px 5px black;
+}
+.canales-perteneces-1{
+  height: 300px;
+  width: 310px;
+  background-color: rgb(255, 255, 255, 0.2);
+  margin-left: 20px;
+  margin-top: -100px;
+  border-radius: 10px;
+}
+.canales-perteneces-2{
+  height: 300px;
+  width: 310px;
+  background-color: rgb(255, 255, 255, 0.2);
+  margin-left: 20px;
+  margin-top: 20px;
+  border-radius: 10px;
+  color: white;
+  font-weight: 600;
+}
+.canales-perteneces-2 h5{
+  padding: 20px;
+}
+
+
+/* default */
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
