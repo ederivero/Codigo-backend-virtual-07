@@ -9,6 +9,12 @@ interface IUsuario extends IRegistro {
   id: string;
 }
 
+interface IMensaje {
+  username: string;
+  mensaje: string;
+  fecha: Date;
+}
+
 export default class Server {
   app: Express;
   port: string | number;
@@ -39,6 +45,7 @@ export default class Server {
     // el metodo on se ejecutara cuando el cliente envie ese evento
     // nosotros podemos crear los eventos que querramos PEEEERO hay metodos ya creados que no se pueden modificar
     let usuarios: Array<IUsuario> = [];
+    const mensajes: Array<IMensaje> = [];
     this.io.on("connect", (cliente) => {
       console.log(`Se conecto el cliente! ${cliente.id}`);
 
@@ -57,6 +64,21 @@ export default class Server {
         }
       });
 
+      cliente.on("mensaje-nuevo", (mensaje: string) => {
+        // buscar ese cliente (cliente.id) en el array de usuarios y usar su nombre
+        const { username } = usuarios.filter(
+          (usuario) => usuario.id === cliente.id
+        )[0];
+
+        mensajes.push({
+          mensaje,
+          username,
+          fecha: new Date(),
+        });
+        this.io.emit("lista-mensajes", mensajes);
+        console.log(mensajes);
+      });
+
       cliente.on("disconnect", (razon) => {
         console.log(razon);
         // cuando el usuario se desconecte, retirarlo de la lista de usuarios
@@ -68,6 +90,7 @@ export default class Server {
       });
       // si nosotros queremos hacer la emision de un evento pero solamente al usuario que la ha solicitado entonces se realizara mediante ese cliente
       cliente.emit("lista-usuarios", usuarios);
+      cliente.emit("lista-mensajes", mensajes);
       // cuando nosotros queremos emitir un evento a todos los demas usuarios EXCEPTO al usuario conectado entonces haremos un broadcast
       //  cliente.broadcast.emit("lista-usuarios", usuarios);
     });

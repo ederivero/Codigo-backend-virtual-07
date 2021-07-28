@@ -19,10 +19,14 @@
   <body>
     <div class="container-fluid">
       <div class="row">
-        <label>ONLINE</label>
+        <label
+          class="btn-block bg-danger text-light p-3 mb-4 text-center"
+          id="estado"
+          >OFFLINE</label
+        >
       </div>
       <div class="row">
-        <div class="col-6" id="login">
+        <div class="col-3" id="login">
           <input
             type="text"
             id="username"
@@ -33,13 +37,15 @@
             Iniciar Sesion
           </button>
 
-          <ul class="list-group" id="usuarios-conectados">
-            <!-- <li class="list-group-item">User1</li>
-            <li class="list-group-item">User2</li>
-            <li class="list-group-item">User3</li> -->
-          </ul>
+          <ul class="list-group" id="usuarios-conectados"></ul>
         </div>
-        <div class="col-6" id="chat">chat</div>
+        <div class="col-9" id="chat" style="display: none">
+          <ul id="listaMensajes" class="list-group"></ul>
+          <input type="text" id="mensaje" class="form-control" />
+          <button class="btn btn-primary btn-block" id="btnEnviar">
+            Enviar Mensaje
+          </button>
+        </div>
       </div>
     </div>
     <script
@@ -56,6 +62,12 @@
       src="https://cdn.socket.io/4.1.2/socket.io.min.js"
       integrity="sha384-toS6mmwu70G0fw54EGlWWeA4z3dyJ+dlXBtSURSKN4vyRFOcxd3Bzjj/AoOwY+Rg"
       crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/timeago.js/4.0.2/timeago.min.js"
+      integrity="sha512-SVDh1zH5N9ChofSlNAK43lcNS7lWze6DTVx1JCXH1Tmno+0/1jMpdbR8YDgDUfcUrPp1xyE53G42GFrcM0CMVg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
     ></script>
 
     <script src="./index.js"></script>
